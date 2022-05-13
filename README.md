@@ -1,6 +1,6 @@
 # MIB5-DVMP
 Stadt
-/
+\
 Haus/
 
 •	Stockwerk/ Höhe des Hauses/
