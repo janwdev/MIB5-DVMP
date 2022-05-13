@@ -11,14 +11,14 @@ Haus\
 •	Unterschiedliche Texturen \
 •	Balkon/Terrasse\
 •	Wintergarten\
-•	Vorüberdachung (Haustür) \\
+•	Vorüberdachung (Haustür) \
 Im Raster \
 Straßen dazwischen? \
-Eventuell Vorstadthäuser/Familienhäuser\
+Eventuell Vorstadthäuser/Familienhäuser
 
-Vorgeschlagene Ideen beim aussuchen klickbar?\\
+Vorgeschlagene Ideen beim aussuchen klickbar?
 
-Aufgaben für die Woche\
+Aufgaben für die Woche
 
 Fenster \
 •	Breite\
@@ -31,4 +31,4 @@ Dach \
 •	Länge \
 •	Schornstein? \
 Türen \
-Geländer \
+Geländer 
