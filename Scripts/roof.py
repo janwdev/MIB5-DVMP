@@ -72,11 +72,11 @@ def createPointyTriangleRoof(length, width, height, objectName, meshName):
 
     bm.verts.ensure_lookup_table() # add [index] functionality
 
-    # # edges
-    edges = [(bm.verts[0], bm.verts[2]), (bm.verts[2], bm.verts[6]), (bm.verts[6], bm.verts[4]), (bm.verts[4], bm.verts[0]), (bm.verts[0], bm.verts[1]), (bm.verts[2], bm.verts[3]), (bm.verts[6], bm.verts[7]), (bm.verts[4], bm.verts[5]), (bm.verts[1], bm.verts[3]), (bm.verts[1], bm.verts[5]), (bm.verts[7], bm.verts[3]), (bm.verts[7], bm.verts[5])]
+    # # # edges
+    # edges = [(bm.verts[0], bm.verts[2]), (bm.verts[2], bm.verts[6]), (bm.verts[6], bm.verts[4]), (bm.verts[4], bm.verts[0]), (bm.verts[0], bm.verts[1]), (bm.verts[2], bm.verts[3]), (bm.verts[6], bm.verts[7]), (bm.verts[4], bm.verts[5]), (bm.verts[1], bm.verts[3]), (bm.verts[1], bm.verts[5]), (bm.verts[7], bm.verts[3]), (bm.verts[7], bm.verts[5])]
 
-    for e in range(len(edges)):
-        bm.edges.new(edges[e])  # add all edges from array
+    # for e in range(len(edges)):
+    #     bm.edges.new(edges[e])  # add all edges from array
 
     # # faces
     faces = [(bm.verts[0], bm.verts[2], bm.verts[6], bm.verts[4]), (bm.verts[0], bm.verts[1], bm.verts[3], bm.verts[2]), (bm.verts[0], bm.verts[1], bm.verts[5], bm.verts[4]), (bm.verts[4], bm.verts[5], bm.verts[7], bm.verts[6]), (bm.verts[6], bm.verts[7], bm.verts[3], bm.verts[2]), (bm.verts[1], bm.verts[3], bm.verts[7], bm.verts[5])]
