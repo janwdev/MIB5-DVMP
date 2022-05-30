@@ -8,7 +8,7 @@ def deleteAll():
     bpy.ops.object.delete(use_global=False, confirm=False)
     bpy.ops.outliner.orphans_purge()  # löscht überbleibende Meshdaten etc.
 
-def createTriangleRoof(length, width, height, objectName, meshName):
+def createTriangleRoof(length, width, height, objectName, meshName, overhang, overhangSize, overhangThickness):
 
     mesh = bpy.data.meshes.new(meshName)  # add a new mesh
 
@@ -27,19 +27,33 @@ def createTriangleRoof(length, width, height, objectName, meshName):
     # verts
     verts = [(width/2, length, height), (width, length, 0), (width/2, 0, height), (width, 0, 0), (width/2, length, height), (0, length, 0), (width/2, 0, height), (0, 0, 0)]
 
+    # overhang
+    if overhang is True:
+        #duplicate verts for overhang width, length, height
+        overhang_verts = [(0, 0 - overhang, 0), (width, 0 - overhang, 0), (width/2, 0 - overhang, height), (0, length + overhang, 0), (width, length + overhang, 0), (width/2, length + overhang, height)]
+        for o in overhang_verts:
+            verts.append(o)  # add all verts from array
+        
+        #duplicate verts for overhangThickness
+        overhangThickness_verts = [(0 + overhangThickness, 0 - overhang, 0), (width - overhangThickness, 0 - overhang, 0), (width/2, 0 - overhang, height - overhangThickness), (0 + overhangThickness, length + overhang, 0), (width - overhangThickness, length + overhang, 0), (width/2, length + overhang, height - overhangThickness), (width/2, length + overhang, height - overhangThickness), (0 + overhangThickness, 0, 0), (width - overhangThickness, 0, 0), (width/2, 0, height- overhangThickness), (0 + overhangThickness, length, 0), (width - overhangThickness, length, 0), (width/2, length, height- overhangThickness)]
+        for o in overhangThickness_verts:
+            verts.append(o)  # add all verts from array
+
+
     for v in verts:
         bm.verts.new(v)  # add all verts from array
 
     bm.verts.ensure_lookup_table() # add [index] functionality
 
-    # # edges
-    # edges = [(bm.verts[1], bm.verts[5]), (bm.verts[5], bm.verts[7]), (bm.verts[7], bm.verts[3]), (bm.verts[3], bm.verts[1]), (bm.verts[1], bm.verts[0]), (bm.verts[5], bm.verts[4]), (bm.verts[7], bm.verts[6]), (bm.verts[3], bm.verts[2]), (bm.verts[0], bm.verts[2]), (bm.verts[4], bm.verts[6]), (bm.verts[2], bm.verts[6]), (bm.verts[0], bm.verts[4])]
-
-    # for e in range(len(edges)):
-    #     bm.edges.new(edges[e])  # add all edges from array
-
     # faces
     faces = [(bm.verts[2], bm.verts[3], bm.verts[6], bm.verts[7]), (bm.verts[1], bm.verts[5], bm.verts[0], bm.verts[4]), (bm.verts[1], bm.verts[3], bm.verts[2], bm.verts[0]), (bm.verts[5], bm.verts[4], bm.verts[6], bm.verts[7]), (bm.verts[0], bm.verts[4], bm.verts[2], bm.verts[6]), (bm.verts[1], bm.verts[3], bm.verts[7], bm.verts[5])]
+
+    # overhang
+    if overhang is True:
+        #faces for overhang
+        overhang_faces = [(bm.verts[8], bm.verts[7], bm.verts[6], bm.verts[10]), (bm.verts[3], bm.verts[9], bm.verts[10], bm.verts[2]), (bm.verts[9], bm.verts[15], bm.verts[16], bm.verts[10]), (bm.verts[14], bm.verts[8], bm.verts[10], bm.verts[16]), (bm.verts[15], bm.verts[16], bm.verts[23], bm.verts[22]), (bm.verts[14], bm.verts[21], bm.verts[23], bm.verts[16]), (bm.verts[21], bm.verts[7], bm.verts[8], bm.verts[14]), (bm.verts[22], bm.verts[3], bm.verts[9], bm.verts[15]), (bm.verts[12], bm.verts[1], bm.verts[0], bm.verts[13]), (bm.verts[11], bm.verts[5], bm.verts[4], bm.verts[13]), (bm.verts[12], bm.verts[18], bm.verts[20], bm.verts[13]), (bm.verts[13], bm.verts[20], bm.verts[17], bm.verts[11]), (bm.verts[20], bm.verts[26], bm.verts[24], bm.verts[17]), (bm.verts[20], bm.verts[26], bm.verts[25], bm.verts[18]), (bm.verts[18], bm.verts[12], bm.verts[1], bm.verts[25]), (bm.verts[24], bm.verts[5], bm.verts[11], bm.verts[17])]
+        for o in overhang_faces:
+            faces.append(o)  # add all verts from array
 
     for f in range(len(faces)):
         bm.faces.new(faces[f])  # add all faces from array
@@ -72,12 +86,6 @@ def createPointyTriangleRoof(length, width, height, objectName, meshName):
 
     bm.verts.ensure_lookup_table() # add [index] functionality
 
-    # # # edges
-    # edges = [(bm.verts[0], bm.verts[2]), (bm.verts[2], bm.verts[6]), (bm.verts[6], bm.verts[4]), (bm.verts[4], bm.verts[0]), (bm.verts[0], bm.verts[1]), (bm.verts[2], bm.verts[3]), (bm.verts[6], bm.verts[7]), (bm.verts[4], bm.verts[5]), (bm.verts[1], bm.verts[3]), (bm.verts[1], bm.verts[5]), (bm.verts[7], bm.verts[3]), (bm.verts[7], bm.verts[5])]
-
-    # for e in range(len(edges)):
-    #     bm.edges.new(edges[e])  # add all edges from array
-
     # # faces
     faces = [(bm.verts[0], bm.verts[2], bm.verts[6], bm.verts[4]), (bm.verts[0], bm.verts[1], bm.verts[3], bm.verts[2]), (bm.verts[0], bm.verts[1], bm.verts[5], bm.verts[4]), (bm.verts[4], bm.verts[5], bm.verts[7], bm.verts[6]), (bm.verts[6], bm.verts[7], bm.verts[3], bm.verts[2]), (bm.verts[1], bm.verts[3], bm.verts[7], bm.verts[5])]
 
@@ -89,4 +97,4 @@ def createPointyTriangleRoof(length, width, height, objectName, meshName):
     bm.free()  # always do this when finished
 
 deleteAll()
-createTriangleRoof(5, 5, 2, "Roof", "Roof")  # length, width, height
+createTriangleRoof(5, 5, 2, "Roof", "Roof", True, 0.5, 0.2)  # length, width, height
