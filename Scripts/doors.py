@@ -1,6 +1,7 @@
 import bpy
 import bmesh
 import math
+import typing
 
 
 class Door:
@@ -18,6 +19,66 @@ class Door:
 
         mesh = bpy.context.object.data
         return mesh
+
+    def create_wood_material(self):
+        # wood_material
+        wood_material = bpy.data.materials.new("Wood")
+        wood_material.use_nodes = True
+        nodes: typing.List[bpy.types.Nodes] = wood_material.node_tree.nodes
+        bsdf = wood_material.node_tree.nodes.get('Principled BSDF')
+        bsdf.inputs[7].default_value = 0.2
+
+        # texture_coordinate
+        tex_coord: bpy.types.Node = nodes.new(type="ShaderNodeTexCoord")
+        
+        # mapping
+        mapping: bpy.types.Node = nodes.new(type="ShaderNodeMapping")
+        
+        # noise
+        nodes.new(type="ShaderNodeValToRGB")
+        noise_texture: bpy.types.Node = nodes.new(type="ShaderNodeTexNoise")
+        noise_texture.inputs[1].default_value = 3
+        noise_texture.inputs[2].default_value = 3.8
+        noise_texture.inputs[3].default_value = 0.545833
+        noise_texture.inputs[4].default_value = 1.6
+    
+        # color ramp
+        color_ramp_color = wood_material.node_tree.nodes.get('ColorRamp')
+    
+        color_ramp_color.color_ramp.elements[0].color = (0.520995,0.250,0.102,1.0)
+        color_ramp_color.color_ramp.elements[1].color = (0.100,0.028,0.0185,1)
+        
+        # brightness/contrast
+        brightness_contrast: bpy.types.Node = nodes.new(type="ShaderNodeBrightContrast")
+        brightness_contrast.inputs[2].default_value = 1
+
+        # color ramp bump
+        color_ramp_bump: bpy.types.Node = nodes.new(type="ShaderNodeValToRGB")
+        color_ramp_bump.color_ramp.elements[1].position = 0.025
+        
+        bump: bpy.types.Node = nodes.new(type="ShaderNodeBump")
+        bump.inputs[1].default_value = 0.01
+        
+        
+        ### linking nodes ###
+        
+        #textcoord to mapping
+        wood_material.node_tree.links.new(mapping.inputs[0], tex_coord.outputs[0])
+        #mapping to noise
+        wood_material.node_tree.links.new(noise_texture.inputs[0], mapping.outputs[0])
+        #noise to ramp
+        wood_material.node_tree.links.new(color_ramp_color.inputs[0], noise_texture.outputs[1])
+        #ramp to bsdf
+        wood_material.node_tree.links.new(bsdf.inputs[0], color_ramp_color.outputs[0])
+        #ramp to bright/contr
+        wood_material.node_tree.links.new(brightness_contrast.inputs[0], color_ramp_color.outputs[0])
+        #bright/contr to bump_ramp
+        wood_material.node_tree.links.new(color_ramp_bump.inputs[0], brightness_contrast.outputs[0])
+        #bump_ramp to bump
+        wood_material.node_tree.links.new(bump.inputs[2], color_ramp_bump.outputs[0])
+        #bump to bsdf
+        wood_material.node_tree.links.new(bsdf.inputs[22], bump.outputs[0])
+        return wood_material
 
     def generate_normal_door(self, width: float, height: float, strenght: float, cutout_frame: float):
         mesh_name = "normal_door"
@@ -59,7 +120,8 @@ class Door:
         # make the bmesh the object's mesh
         bm.to_mesh(mesh)
         bm.free()  # always do this when finished
-        return mesh
+        obj:bpy.types.object = bpy.context.object
+        return obj
 
     def generate_door(self, width: float, height: float, cutout_frame: float, material: bpy.types.Material = None, strength: float = 4,
                       handle: bpy.types.Mesh = None, keyhole: bpy.types.Mesh = None, frame: bpy.types.Mesh = None,
@@ -69,8 +131,9 @@ class Door:
         height = height / 100
         strength = strength / 100
         cutout_frame = cutout_frame / 100
-        normal_door_mesh: bpy.types.Mesh = self.generate_normal_door(
+        normal_door: bpy.types.object = self.generate_normal_door(
             width, height, strength, cutout_frame)
+        return normal_door
 
     def generate_frame(self, width_door: float, height_door: float, cutout_door: float, width: float, strength: float, height: float, material: bpy.types.Material = None):
 
@@ -87,7 +150,6 @@ class Door:
         mesh: bpy.types.Mesh = self.prepare_mesh(mesh_name, mesh_name)
         bm = bmesh.new()
 
-        # TODO
         verts = [
             # unten 1
             (width_door/2 + width-cutout_door, 0, 0), (width_door/2-cutout_door, 0, 0), (width_door/2-cutout_door, -cutout_door, 0), (width_door/2-cutout_door - cutout_door, -cutout_door,
@@ -109,7 +171,6 @@ class Door:
         # bm.verts.new(verts[0])
         bm.verts.ensure_lookup_table()  # add [index] functionality
 
-        # TODO
         faces = [
             (bm.verts[5], bm.verts[0], bm.verts[7], bm.verts[6]),
             (bm.verts[0], bm.verts[1],  bm.verts[8], bm.verts[7]),
@@ -130,7 +191,7 @@ class Door:
         # make the bmesh the object's mesh
         bm.to_mesh(mesh)
         bm.free()  # always do this when finished
-        obj = bpy.context.object
+        obj:bpy.types.object = bpy.context.object
         mod = obj.modifiers.new('MirrorX', 'MIRROR')
         mod.use_axis[0] = True
         bpy.ops.object.modifier_apply(modifier='MirrorX')
@@ -144,7 +205,7 @@ class Door:
         mod.use_axis[1] = True
         bpy.ops.object.modifier_apply(modifier='MirrorY')
         obj.matrix_world.translation = (0.0, -strength/2-cutout_door, 0.0)
-        return mesh
+        return obj
 
     def generate_keyhole(self, posx_door: int, posy_door: int, posz_door: int, rot_door: float, height_door: float, width_door: float, strength_door: float, fspace: float, radius: float, depth: float, under_hold: float, rad_hole: float = 0.5):
         door = bpy.context.object
@@ -196,6 +257,15 @@ class Door:
         boolean2 = door.modifiers.new(name="keyhole_bool2", type="BOOLEAN")
         boolean2.object = hole
         boolean2.operation = "DIFFERENCE"
+        
+        # parenting auf Keyhole
+        bpy.ops.object.select_all(action='DESELECT') #deselect all object
+        hole.select_set(True) #select the object for the 'parenting'
+        keyhole.select_set(True)
+        bpy.context.view_layer.objects.active = keyhole    #the active object will be the parent of all selected object
+        bpy.ops.object.parent_set(type='OBJECT', keep_transform=False)
+
+        return keyhole
 
     def generate_doorhandle(self, posx_door: float, posy_door: float, posz_door: float, height_door: float, width_door: float, fspace: float, radius: float, radius_handle: float):
         print("Doorhandle")
@@ -228,21 +298,28 @@ class Door:
         # make the bmesh the object's mesh
         bm.to_mesh(mesh)
         bm.free()  # always do this when finished
+        doorhandle:bpy.types.object = bpy.context.object
         # Modifiers
-        mod_skin = bpy.context.object.modifiers.new(
+        mod_skin = doorhandle.modifiers.new(
             name="door_handle_skin", type="SKIN")
         mod_skin.use_smooth_shade = True
-        for v in bpy.context.object.data.skin_vertices[0].data:
+        for v in doorhandle.data.skin_vertices[0].data:
             v.radius = radius, radius
-        mod_subdiv = bpy.context.object.modifiers.new(
+        mod_subdiv = doorhandle.modifiers.new(
             name="door_handle_subdiv", type="SUBSURF")
         mod_subdiv.levels = 1
         mod_subdiv.render_levels = 2
         mod_subdiv.quality = 3
+        return doorhandle
 
 
 def deleteAll():
     # delete old everything
+    ## clear all materials
+    for material in bpy.data.materials:
+        material.user_clear()
+        bpy.data.materials.remove(material)
+
     bpy.ops.object.select_all(action='SELECT')  # selektiert alle Objekte
     # löscht selektierte objekte
     bpy.ops.object.delete(use_global=False, confirm=False)
@@ -252,8 +329,24 @@ def deleteAll():
 # TODO deleteAll entfernen
 deleteAll()
 
-door = Door()
-door.generate_door(120, 210, 2)  # Masse in cm
-door.generate_frame(120, 210, 2, 25, 10, 25)
-keyhole = door.generate_keyhole(0, 0, 0, 0, 210, 120, 4, 3, 2, 5, 10)
-door_handle = door.generate_doorhandle(0, 0, 0, 210, 120, 5, 1.5, 1)
+bpy.data.scenes["Scene"].eevee.use_ssr = True
+
+doorFac = Door()
+door = doorFac.generate_door(120, 210, 2)  # Masse in cm
+frame = doorFac.generate_frame(120, 210, 2, 25, 10, 25)
+keyhole = doorFac.generate_keyhole(0, 0, 0, 0, 210, 120, 4, 3, 2, 5, 10)
+door_handle = doorFac.generate_doorhandle(0, 0, 0, 210, 120, 5, 1.5, 1)
+
+door.data.materials.append(doorFac.create_wood_material())
+frame.data.materials.append(doorFac.create_wood_material())
+
+# parenting
+bpy.ops.object.select_all(action='DESELECT') #deselect all object
+door.select_set(True) #select the object for the 'parenting'
+frame.select_set(True)
+keyhole.select_set(True)
+door_handle.select_set(True)
+bpy.context.view_layer.objects.active = door    #the active object will be the parent of all selected object
+bpy.ops.object.parent_set(type='OBJECT', keep_transform=False)
+
+# TODO return door
