@@ -1,5 +1,6 @@
 import bpy
 import bmesh
+import math
 
 
 class Door:
@@ -86,32 +87,37 @@ class Door:
         mesh: bpy.types.Mesh = self.prepare_mesh(mesh_name, mesh_name)
         bm = bmesh.new()
 
-        #TODO
+        # TODO
         verts = [
             # unten 1
             (width_door/2 + width-cutout_door, 0, 0), (width_door/2-cutout_door, 0, 0), (width_door/2-cutout_door, -cutout_door, 0), (width_door/2-cutout_door - cutout_door, -cutout_door,
-                                                                                           0), (width_door/2-cutout_door*2, -cutout_door - strength/2, 0), (width_door/2 + width-cutout_door, -cutout_door - strength/2, 0),
+                                                                                                                                      0), (width_door/2-cutout_door*2, -cutout_door - strength/2, 0), (width_door/2 + width-cutout_door, -cutout_door - strength/2, 0),
             # oben 1
-            (width_door/2 + width-cutout_door, -cutout_door - strength/2, height_door+height), (width_door/2 + width-cutout_door, 0, height_door + height), (width_door/2-cutout_door, 0, height_door - cutout_door),
-            (width_door/2-cutout_door, -cutout_door,height_door-cutout_door), (width_door/2-cutout_door-cutout_door, -cutout_door,height_door-cutout_door - cutout_2),(width_door/2-cutout_door-cutout_door, -cutout_door- strength/2,height_door-cutout_door- cutout_2),
+            (width_door/2 + width-cutout_door, -cutout_door - strength/2, height_door+height), (width_door/2 + \
+                                                                                                width-cutout_door, 0, height_door + height), (width_door/2-cutout_door, 0, height_door - cutout_door),
+            (width_door/2-cutout_door, -cutout_door, height_door-cutout_door), (width_door/2-cutout_door-cutout_door, -cutout_door, height_door - \
+                                                                                cutout_door - cutout_2), (width_door/2-cutout_door-cutout_door, -cutout_door - strength/2, height_door-cutout_door - cutout_2),
             # oben mitte
-            (0, -cutout_door - strength/2, height_door+height), (0, 0, height_door + height), (0, 0, height_door - cutout_door),
-            (0, -cutout_door,height_door-cutout_door), (0, -cutout_door,height_door-cutout_door - cutout_2),(0, -cutout_door- strength/2,height_door-cutout_door- cutout_2),
-            
-            ]
+            (0, -cutout_door - strength/2, height_door+height), (0, 0,
+                                                                 height_door + height), (0, 0, height_door - cutout_door),
+            (0, -cutout_door, height_door-cutout_door), (0, -cutout_door, height_door-cutout_door - \
+                                                         cutout_2), (0, -cutout_door - strength/2, height_door-cutout_door - cutout_2),
+
+        ]
         for v in verts:
             bm.verts.new(v)  # add all verts from array
         # bm.verts.new(verts[0])
         bm.verts.ensure_lookup_table()  # add [index] functionality
 
-        #TODO
+        # TODO
         faces = [
             (bm.verts[5], bm.verts[0], bm.verts[7], bm.verts[6]),
             (bm.verts[0], bm.verts[1],  bm.verts[8], bm.verts[7]),
             (bm.verts[1],  bm.verts[8], bm.verts[9], bm.verts[2]),
             (bm.verts[2],  bm.verts[3], bm.verts[10], bm.verts[9]),
             (bm.verts[3],  bm.verts[4], bm.verts[11], bm.verts[10]),
-            (bm.verts[0], bm.verts[1], bm.verts[2], bm.verts[3], bm.verts[4], bm.verts[5]),
+            (bm.verts[0], bm.verts[1], bm.verts[2],
+             bm.verts[3], bm.verts[4], bm.verts[5]),
             (bm.verts[6],  bm.verts[7], bm.verts[13], bm.verts[12]),
             (bm.verts[7],  bm.verts[13], bm.verts[14], bm.verts[8]),
             (bm.verts[8],  bm.verts[14], bm.verts[15], bm.verts[9]),
@@ -130,7 +136,8 @@ class Door:
         bpy.ops.object.modifier_apply(modifier='MirrorX')
 
         obj.matrix_world.translation = (0.0, strength/2+cutout_door, 0.0)
-        bpy.ops.object.transform_apply(location=True, scale=False,rotation=False)
+        bpy.ops.object.transform_apply(
+            location=True, scale=False, rotation=False)
 
         mod = obj.modifiers.new('MirrorY', 'MIRROR')
         mod.use_axis[0] = False
@@ -138,6 +145,100 @@ class Door:
         bpy.ops.object.modifier_apply(modifier='MirrorY')
         obj.matrix_world.translation = (0.0, -strength/2-cutout_door, 0.0)
         return mesh
+
+    def generate_keyhole(self, posx_door: int, posy_door: int, posz_door: int, rot_door: float, height_door: float, width_door: float, strength_door: float, fspace: float, radius: float, depth: float, under_hold: float, rad_hole: float = 0.5):
+        door = bpy.context.object
+        # TODO xyz ueberpruefen
+        # TODO einbauen wenn negativ
+        posx = posx_door + width_door/2-fspace-radius
+        posy = posy_door
+        posz = posz_door + height_door/2 - under_hold
+
+        posx = posx/100
+        posy = posy/100
+        posz = posz/100
+        radius = radius / 100
+        depth = depth / 100
+        rad_hole = rad_hole / 100
+        under_hold = under_hold / 100
+
+        bpy.types.Mesh = bpy.ops.mesh.primitive_cylinder_add(
+            radius=radius,
+            depth=depth,
+            location=(posx, posy, posz)
+        )
+
+        keyhole = bpy.context.object
+
+        bpy.types.Mesh = bpy.ops.mesh.primitive_cylinder_add(
+            radius=rad_hole,
+            depth=depth+0.1,
+            location=(posx, posy, posz)
+        )
+
+        hole = bpy.context.object
+
+        boolean = keyhole.modifiers.new(name="keyhole_bool", type="BOOLEAN")
+        boolean.object = hole
+        boolean.operation = "DIFFERENCE"
+
+        # TODO funktioniert nicht, deshalb verstecken
+        # bpy.ops.object.modifier_apply(modifier=boolean.name)
+        # bpy.ops.object.delete()
+        hole.hide_set(True)
+
+        keyhole.rotation_euler[0] = math.radians(90)
+        keyhole.rotation_euler[2] = math.radians(rot_door)
+
+        hole.rotation_euler[0] = math.radians(90)
+        hole.rotation_euler[2] = math.radians(rot_door)
+
+        boolean2 = door.modifiers.new(name="keyhole_bool2", type="BOOLEAN")
+        boolean2.object = hole
+        boolean2.operation = "DIFFERENCE"
+
+    def generate_doorhandle(self, posx_door: float, posy_door: float, posz_door: float, height_door: float, width_door: float, fspace: float, radius: float, radius_handle: float):
+        print("Doorhandle")
+
+        posx = posx_door + width_door/2-fspace-radius
+        posy = posy_door
+        posz = posz_door + height_door/2
+
+        posx = posx/100
+        posy = posy/100
+        posz = posz/100
+        radius = radius / 100
+        radius_handle = radius_handle/100
+        lengthx = 8/100  # TODO dynamisch
+        lengthy = 10/100
+        mesh_name = "door_handle"
+        mesh: bpy.types.Mesh = self.prepare_mesh(mesh_name, mesh_name)
+        bm = bmesh.new()
+        # verticies
+        verts = [
+            (posx, posy, posz), (posx, posy+lengthy,
+                                 posz), (posx-lengthx, posy+lengthy, posz)
+        ]
+        for v in verts:
+            bm.verts.new(v)  # add all verts from array
+        bm.verts.ensure_lookup_table()  # add [index] functionality
+        edges = [(bm.verts[0], bm.verts[1]), (bm.verts[1], bm.verts[2])]
+        for e in range(len(edges)):
+            bm.edges.new(edges[e])
+        # make the bmesh the object's mesh
+        bm.to_mesh(mesh)
+        bm.free()  # always do this when finished
+        # Modifiers
+        mod_skin = bpy.context.object.modifiers.new(
+            name="door_handle_skin", type="SKIN")
+        mod_skin.use_smooth_shade = True
+        for v in bpy.context.object.data.skin_vertices[0].data:
+            v.radius = radius, radius
+        mod_subdiv = bpy.context.object.modifiers.new(
+            name="door_handle_subdiv", type="SUBSURF")
+        mod_subdiv.levels = 1
+        mod_subdiv.render_levels = 2
+        mod_subdiv.quality = 3
 
 
 def deleteAll():
@@ -154,3 +255,5 @@ deleteAll()
 door = Door()
 door.generate_door(120, 210, 2)  # Masse in cm
 door.generate_frame(120, 210, 2, 25, 10, 25)
+keyhole = door.generate_keyhole(0, 0, 0, 0, 210, 120, 4, 3, 2, 5, 10)
+door_handle = door.generate_doorhandle(0, 0, 0, 210, 120, 5, 1.5, 1)
