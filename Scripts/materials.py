@@ -2,7 +2,9 @@ import bpy
 import typing
 
 
-class Materials:
+class Materials():
+
+    bsdf_normal_input = 22
 
     @staticmethod
     def create_wood_material():
@@ -94,3 +96,94 @@ class Materials:
         metal_material.node_tree.nodes["Principled BSDF"].inputs[9].default_value = 0.15
         metal_material.node_tree.nodes["Principled BSDF"].inputs[6].default_value = 1
         return metal_material
+
+
+  
+    def plaster():
+        material = bpy.data.materials.new("Plaster")
+        
+        material.use_nodes = True
+       
+        bsdf = Materials.get_node(material, "Principled BSDF")
+        output = Materials.get_output(material)
+        voronoi = Materials.add_node(material, "ShaderNodeTexVoronoi")
+        noise = Materials.add_node(material, "ShaderNodeTexNoise")
+        voronoi.distance = 'MANHATTAN'
+        voronoi.inputs[2].default_value = 30
+
+        tex_coords = Materials.add_tex_coords_node(material)
+        mapping = Materials.add_mapping_node(material)
+
+        ramp = Materials.add_ramp_node(material)
+        c = 0.223
+        c_darker = 0.116
+        ramp = Materials.adjust_ramp(ramp, 0, 0.187, (c, c, c, 1))
+        ramp = Materials.adjust_ramp(ramp, 1, 0.773, (c_darker, c_darker, c_darker, 1))
+
+        bump = Materials.add_bump_node(material)
+        bump.inputs[0].default_value = 0.5
+        bump_2 = Materials.add_bump_node(material)
+        bump_2.inputs[0].default_value = 0.2
+
+        noise_2 = Materials.add_node(material, "ShaderNodeTexNoise")
+
+        bump_ramp = Materials.add_ramp_node(material)
+        bump_ramp = Materials.adjust_ramp(bump_ramp, 0, 0.290)
+        bump_ramp = Materials.adjust_ramp(bump_ramp, 1, 0.684)
+
+
+        mix_rgb = Materials.add_node(material, "ShaderNodeMixRGB")
+
+        Materials.link_nodes(material, tex_coords, 3, mapping, 0)
+        Materials.link_nodes(material, mapping, 0, noise, 0)
+        Materials.link_nodes(material, mapping, 0, noise_2, 0)
+        Materials.link_nodes(material, noise, 1, voronoi, 0)
+        Materials.link_nodes(material, voronoi, 0, mix_rgb, 1)
+        Materials.link_nodes(material, noise_2, 0, mix_rgb, 2)
+        Materials.link_nodes(material, mix_rgb, 0, ramp, 0)
+        Materials.link_nodes(material, ramp, 0, bsdf, 0)
+        Materials.link_nodes(material, bsdf, 0, output, 0)
+
+        Materials.link_nodes(material, voronoi, 0, bump_ramp, 0)
+        Materials.link_nodes(material, bump_ramp, 0, bump, 2)
+        Materials.link_nodes(material, noise_2, 0, bump_2, 2)
+        Materials.link_nodes(material, bump, 0, bump_2, 5)
+        Materials.link_nodes(material, bump_2, 0, bsdf, Materials.bsdf_normal_input)
+        
+
+
+
+    def remove_node(material, name):
+        material.node_tree.nodes.remove(material.node_tree.nodes.get(name))
+
+    def add_node(material, name):
+        node: bpy.types.Node = material.node_tree.nodes.new(name)
+        return node
+
+    def link_nodes(material, s_1, s1_output, s_2, s_2_input):
+        material.node_tree.links.new(s_2.inputs[s_2_input], s_1.outputs[s1_output])
+
+    def add_tex_coords_node(material):
+        return Materials.add_node(material, "ShaderNodeTexCoord")
+    def add_mapping_node(material):
+        return Materials.add_node(material, "ShaderNodeMapping")
+    def add_ramp_node(material):
+        return Materials.add_node(material, "ShaderNodeValToRGB")
+    def add_bump_node(material):
+        return Materials.add_node(material, "ShaderNodeBump")
+    def get_node(material, name):
+        return material.node_tree.nodes.get(name)
+    def get_output(material):
+        return Materials.get_node(material, "Material Output")
+    def adjust_ramp(ramp, handle_index, pos, color = -1):
+        if(color != -1):
+            ramp.color_ramp.elements[handle_index].color = color
+            
+        ramp.color_ramp.elements[handle_index].position = pos
+        return ramp
+        
+
+       
+
+
+
