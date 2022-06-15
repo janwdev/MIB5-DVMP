@@ -4,7 +4,8 @@ import typing
 
 class Materials:
 
-    def create_wood_material(self):
+    @staticmethod
+    def create_wood_material():
         # wood_material
         wood_material = bpy.data.materials.new("Wood")
         wood_material.use_nodes = True
@@ -73,7 +74,8 @@ class Materials:
         wood_material.node_tree.links.new(bsdf.inputs[22], bump.outputs[0])
         return wood_material
 
-    def create_glass_material(self):
+    @staticmethod
+    def create_glass_material():
         glass_material = bpy.data.materials.new("Glass")
         glass_material.use_nodes = True
         nodes: typing.List[bpy.types.Nodes] = glass_material.node_tree.nodes
@@ -85,7 +87,8 @@ class Materials:
             material_output.inputs[0], node_glass.outputs[0])
         return glass_material
 
-    def create_metal_material(self):
+    @staticmethod
+    def create_metal_material():
         metal_material = bpy.data.materials.new("Metal")
         metal_material.use_nodes = True
         metal_material.node_tree.nodes["Principled BSDF"].inputs[9].default_value = 0.15
