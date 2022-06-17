@@ -141,11 +141,9 @@ class Materials():
 
         c = 0.08
         c_2 = 0.2
-        ramp = Materials.adjust_ramp_pos(ramp, 0, 0.236)
-        ramp = Materials.adjust_ramp_color(ramp, 0, (c, c, c, 1))
-        ramp = Materials.adjust_ramp_pos(ramp, 1, 0.830)
-        ramp = Materials.adjust_ramp_color(ramp, 1, (c_2, c_2, c_2, 1))
-
+        ramp = Materials.adjust_ramp(ramp, 0, 0.236, (c,c,c,1))
+        ramp = Materials.adjust_ramp(ramp, 1, 0.830, (c_2,c_2,c_2,1))
+        
         # roughness
         musgrave.inputs[2].default_value = 0.1
         musgrave.inputs[3].default_value = 16

@@ -1,8 +1,8 @@
 import bpy
 import bmesh
 import math
-from . generic import Gen
 
+from . generic import Gen
 from . materials import Materials
 
 class Door:
