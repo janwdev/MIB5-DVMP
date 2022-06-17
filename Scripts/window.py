@@ -25,10 +25,9 @@ class Windows:
         bm.faces.new((vert4_2, vert4, vert3, vert3_2))
         bm.faces.new((vert1_2, vert1, vert2, vert2_2))
 
-    
 
     @staticmethod
-    def __create_random_basis(windowheight, windowwidth, leafdepth, windowframewidth, windowdepth, windowsill, windowaccessoir):
+    def __create_random_basis(windowheight, windowwidth,  windowdepth):
 
         windowmesh = bpy.data.meshes.new("WindowMesh")
         windowobject = bpy.data.objects.new("WindowFrame", windowmesh)
@@ -63,7 +62,7 @@ class Windows:
         return frameobject
 
     @staticmethod
-    def __create_windowleaf(windowheight,windowwidth,leafdepth,windowframewidth):
+    def __create_windowleaf(windowheight,windowwidth,leafdepth):
          
         # windowleaf = 3
         windowleaf = random.randint(1,4)
@@ -321,14 +320,13 @@ class Windows:
         windowaccessoirr = random.uniform(1,3)
 
         basis: bpy.types.object = Windows.__create_random_basis(
-            windowheight, windowwidth, leafdepth, windowframewidth, windowdepth, windowsill, windowaccessoir)
+            windowheight, windowwidth, windowdepth)
         glass: bpy.types.Material = Materials.create_glass_material()
-        #obj: bpy.types.object = bpy.context.object
         basis.data.materials.append(glass)
         windowframe: bpy.types.object = Windows.__create_window_frame(windowheight,windowwidth,leafdepth,windowframewidth)
         wood:  bpy.types.Material = Materials.create_wood_material()
         windowframe.data.materials.append(wood)
-        windowleaf: bpy.types.object = Windows.__create_windowleaf(windowheight,windowwidth,leafdepth,windowframewidth)
+        windowleaf: bpy.types.object = Windows.__create_windowleaf(windowheight,windowwidth,leafdepth)
         if windowleaf != None:
             windowleaf.data.materials.append(wood)
         if (windowsillr==1):
