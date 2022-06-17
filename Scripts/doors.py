@@ -1,44 +1,9 @@
 import bpy
 import bmesh
 import math
+from . generic import Gen
 
-from Scripts.materials import Materials
-
-
-def deleteAll():
-    # delete old everything
-    # clear all materials
-    for material in bpy.data.materials:
-        material.user_clear()
-        bpy.data.materials.remove(material)
-
-    bpy.ops.object.select_all(action='SELECT')  # selektiert alle Objekte
-    # löscht selektierte objekte
-    bpy.ops.object.delete(use_global=False, confirm=False)
-    bpy.ops.outliner.orphans_purge()  # löscht überbleibende Meshdaten etc.
-
-
-def parenting(elements, parent):
-    bpy.ops.object.select_all(action='DESELECT')  # deselect all object
-    for element in elements:
-        element.select_set(True)  # select the object for the 'parenting'
-    # the active object will be the parent of all selected object
-    bpy.context.view_layer.objects.active = parent
-    bpy.ops.object.parent_set(type='OBJECT', keep_transform=False)
-
-def prepare_mesh(meshname: str, object_name: str):
-        mesh = bpy.data.meshes.new(meshname)  # add a new mesh
-        # add a new object using the mesh
-        obj = bpy.data.objects.new(object_name, mesh)
-        scene = bpy.context.scene
-        # put the object into the scene (link)
-        scene.collection.objects.link(obj)
-        # set as the active object in the scene
-        bpy.context.view_layer.objects.active = obj
-        obj.select_set(state=True)  # select object
-
-        mesh = bpy.context.object.data
-        return mesh
+from . materials import Materials
 
 class Door:
 
@@ -50,7 +15,7 @@ class Door:
         cutout_frame = cutout_frame / 100
 
         mesh_name = "normal_door"
-        mesh: bpy.types.Mesh = prepare_mesh(mesh_name, mesh_name)
+        mesh: bpy.types.Mesh = Gen.prepare_mesh(mesh_name, mesh_name)
         bm = bmesh.new()
 
         # verticies
@@ -104,7 +69,7 @@ class Door:
         cutout_2 = 3/100
 
         mesh_name = "normal_door_frame"
-        mesh: bpy.types.Mesh = prepare_mesh(mesh_name, mesh_name)
+        mesh: bpy.types.Mesh = Gen.prepare_mesh(mesh_name, mesh_name)
         bm = bmesh.new()
 
         verts = [
@@ -206,7 +171,7 @@ class Door:
         boolean2.object = hole
         boolean2.operation = "DIFFERENCE"
 
-        parenting([hole, keyhole], keyhole)
+        Gen.parenting([hole, keyhole], keyhole)
         hole.hide_set(True)
         return keyhole
 
@@ -225,7 +190,7 @@ class Door:
         length_y = length_y/100
 
         mesh_name = "door_handle"
-        mesh: bpy.types.Mesh = prepare_mesh(mesh_name, mesh_name)
+        mesh: bpy.types.Mesh = Gen.prepare_mesh(mesh_name, mesh_name)
         bm = bmesh.new()
         # verticies
         verts = [
@@ -288,13 +253,6 @@ class Door:
         door_handle.data.materials.append(handle_material)
 
         # parenting
-        parenting([normal_door, frame, keyhole, door_handle], normal_door)
+        Gen.parenting([normal_door, frame, keyhole, door_handle], normal_door)
         return normal_door
-
-
-# TODO deleteAll entfernen
-deleteAll()
-
-bpy.data.scenes["Scene"].eevee.use_ssr = True
-
-door = Door.generate_door()  # Masse in cm
+        

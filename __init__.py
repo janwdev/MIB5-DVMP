@@ -12,10 +12,12 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import bpy
-import bmesh
-import math
-import mathutils
-import random
+
+from .scripts.doors import Door
+# from .Scripts.handrail import handrail
+from .scripts.roof import Roof
+# from .Scripts import window
+from .scripts.generic import Gen
 
 bl_info = {
     "name" : "Building Generator",
@@ -29,18 +31,14 @@ bl_info = {
 
 class BUILDINGGENERATOR(bpy.types.Operator):
     """My Object Moving Script"""      # Use this as a tooltip for menu items and buttons.
-    bl_idname = "object.move_x"        # Unique identifier for buttons and menu items to reference.
-    bl_label = "Move X by One"         # Display name in the interface.
+    bl_idname = "building.generatordvmp"        # Unique identifier for buttons and menu items to reference.
+    bl_label = "Generate Building"         # Display name in the interface.
     bl_options = {'REGISTER', 'UNDO'}  # Enable undo for the operator.
 
     def execute(self, context):        # execute() is called when running the operator.
-         
-
-        # The original script
-        scene = context.scene
-        for obj in scene.objects:
-            obj.location.x += 1.0
-
+        bpy.data.scenes["Scene"].eevee.use_ssr = True
+        door = Door.generate_door()  # Masse in cm
+        # Roof.createFlatRoof(5, 5, 2, "Roof", "Roof", True, 2)  # length, width, height
         return {'FINISHED'}            # Lets Blender know the operator finished successfully.
 
 
@@ -50,8 +48,15 @@ def menu_func(self, context):
     self.layout.operator(BUILDINGGENERATOR.bl_idname)
 
 def register():
+    from .scripts.doors import Door
+    # from .Scripts.handrail import handrail
+    from .scripts.roof import Roof
+    # from .Scripts import window
+    from .scripts.generic import Gen
+    print("starting")
     bpy.utils.register_class(BUILDINGGENERATOR)
     bpy.types.VIEW3D_MT_object.append(menu_func)  # Adds the new operator to an existing menu.
+    print("Building-Generator started")
 
 def unregister():
     bpy.utils.unregister_class(BUILDINGGENERATOR)
