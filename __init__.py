@@ -14,10 +14,10 @@
 import bpy
 
 from .Scripts.doors import Door
-# from .Scripts.handrail import handrail
+from .Scripts.handrail import Handrail
 from .Scripts.roof import Roof
-# from .Scripts import window
 from .Scripts.generic import Gen
+# TODO hier und unten Window importieren
 
 bl_info = {
     "name" : "Building Generator",
@@ -37,8 +37,18 @@ class BUILDINGGENERATOR(bpy.types.Operator):
 
     def execute(self, context):        # execute() is called when running the operator.
         bpy.data.scenes["Scene"].eevee.use_ssr = True
-        door = Door.generate_door()  # Masse in cm
+        # door = Door.generate_door()  # Masse in cm
         # Roof.createFlatRoof(5, 5, 2, "Roof", "Roof", True, 2)  # length, width, height
+        
+        objects = bpy.data.objects
+        wall = False
+        scale_x = 0.09
+        scale_y = 0.09
+        length = 10
+        height = 0.9
+        amount = 7
+        Handrail.handrail(objects, wall, scale_x, scale_y, length, height, amount)
+
         return {'FINISHED'}            # Lets Blender know the operator finished successfully.
 
 
@@ -49,9 +59,8 @@ def menu_func(self, context):
 
 def register():
     from .Scripts.doors import Door
-    # from .Scripts.handrail import handrail
+    from .Scripts.handrail import Handrail
     from .Scripts.roof import Roof
-    # from .Scripts import window
     from .Scripts.generic import Gen
     print("starting")
     bpy.utils.register_class(BUILDINGGENERATOR)
