@@ -335,32 +335,3 @@ class Windows:
         if (windowaccessoirr!=1):
             windowaccessoir: bpy.types.object =Windows.__create_window_accessoir(windowheight,windowwidth,windowframewidth,windowaccessoirr)
             windowaccessoir.data.materials.append(wood)
-
-def deleteAll():
-    # delete old everything
-    # clear all materials
-    for material in bpy.data.materials:
-        material.user_clear()
-        bpy.data.materials.remove(material)
-
-    bpy.ops.object.select_all(action='SELECT')  # selektiert alle Objekte
-    # löscht selektierte objekte
-    bpy.ops.object.delete(use_global=False, confirm=False)
-    bpy.ops.outliner.orphans_purge()  # löscht überbleibende Meshdaten etc.
-
-
-windowheight = random.randint(4, 10)
-windowwidth = random.randint(2, 7)
-leafdepth = random.uniform(0.05, 0.1)
-windowframewidth = random.uniform(0.05, 0.2)
-windowdepth = random.uniform(0.2, 0.8)
-
-windowsill = random.randint(1, 2)
-windowaccessoir = random.uniform(1, 3)
-
-deleteAll()
-
-bpy.data.scenes["Scene"].eevee.use_ssr = True
-
-Windows.create_window(windowheight, windowwidth, leafdepth,
-                      windowframewidth, windowdepth, windowsill, windowaccessoir)

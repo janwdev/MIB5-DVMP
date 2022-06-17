@@ -12,12 +12,13 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import bpy
+import random
 
 from .Scripts.doors import Door
 from .Scripts.handrail import Handrail
 from .Scripts.roof import Roof
 from .Scripts.generic import Gen
-# TODO hier und unten Window importieren
+from .Scripts.window import Windows
 
 bl_info = {
     "name" : "Building Generator",
@@ -37,17 +38,30 @@ class BUILDINGGENERATOR(bpy.types.Operator):
 
     def execute(self, context):        # execute() is called when running the operator.
         bpy.data.scenes["Scene"].eevee.use_ssr = True
-        # door = Door.generate_door()  # Masse in cm
+        door = Door.generate_door()  # Masse in cm
         # Roof.createFlatRoof(5, 5, 2, "Roof", "Roof", True, 2)  # length, width, height
         
-        objects = bpy.data.objects
-        wall = False
-        scale_x = 0.09
-        scale_y = 0.09
-        length = 10
-        height = 0.9
-        amount = 7
-        Handrail.handrail(objects, wall, scale_x, scale_y, length, height, amount)
+        # objects = bpy.data.objects
+        # wall = False
+        # scale_x = 0.09
+        # scale_y = 0.09
+        # length = 10
+        # height = 0.9
+        # amount = 7
+        # Handrail.handrail(objects, wall, scale_x, scale_y, length, height, amount)
+
+        # windowheight = random.randint(4, 10)
+        # windowwidth = random.randint(2, 7)
+        # leafdepth = random.uniform(0.05, 0.1)
+        # windowframewidth = random.uniform(0.05, 0.2)
+        # windowdepth = random.uniform(0.2, 0.8)
+
+        # windowsill = random.randint(1, 2)
+        # windowaccessoir = random.uniform(1, 3)
+
+        # Windows.create_window(windowheight, windowwidth, leafdepth,
+        #                     windowframewidth, windowdepth, windowsill, windowaccessoir)
+
 
         return {'FINISHED'}            # Lets Blender know the operator finished successfully.
 
@@ -62,6 +76,7 @@ def register():
     from .Scripts.handrail import Handrail
     from .Scripts.roof import Roof
     from .Scripts.generic import Gen
+    from .Scripts.window import Windows
     print("starting")
     bpy.utils.register_class(BUILDINGGENERATOR)
     bpy.types.VIEW3D_MT_object.append(menu_func)  # Adds the new operator to an existing menu.
