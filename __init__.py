@@ -13,11 +13,11 @@
 
 import bpy
 
-from .scripts.doors import Door
+from .Scripts.doors import Door
 # from .Scripts.handrail import handrail
-from .scripts.roof import Roof
+from .Scripts.roof import Roof
 # from .Scripts import window
-from .scripts.generic import Gen
+from .Scripts.generic import Gen
 
 bl_info = {
     "name" : "Building Generator",
@@ -48,11 +48,11 @@ def menu_func(self, context):
     self.layout.operator(BUILDINGGENERATOR.bl_idname)
 
 def register():
-    from .scripts.doors import Door
+    from .Scripts.doors import Door
     # from .Scripts.handrail import handrail
-    from .scripts.roof import Roof
+    from .Scripts.roof import Roof
     # from .Scripts import window
-    from .scripts.generic import Gen
+    from .Scripts.generic import Gen
     print("starting")
     bpy.utils.register_class(BUILDINGGENERATOR)
     bpy.types.VIEW3D_MT_object.append(menu_func)  # Adds the new operator to an existing menu.
