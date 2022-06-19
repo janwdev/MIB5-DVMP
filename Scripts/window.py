@@ -3,6 +3,7 @@ import bmesh
 import random
 
 from .materials import Materials
+from . generic import Gen
 
 class Windows:
     @staticmethod
@@ -62,43 +63,9 @@ class Windows:
         return frameobject
 
     @staticmethod
-    def __create_windowleaf(windowheight,windowwidth,leafdepth):
-         
-        # windowleaf = 3
-        windowleaf = random.randint(1,4)
-        leaf = None
-        if(windowleaf==2):
-            leaf =Windows.__create_two_leaf_window(windowheight,windowwidth,leafdepth)
-
-        elif(windowleaf==3):
-            leaf= Windows.__create_three_leaf_window(windowheight,windowwidth,leafdepth)
-            
-        elif(windowleaf==4):
-            leaf= Windows.__create_four_leaf_window(windowheight,windowwidth,leafdepth)
-        return leaf
-            
-    @staticmethod
-    def __vertical_window(windowheight,windowwidth):
-        height= windowheight
-        width = windowwidth/10
-        return height,width
-
-    @staticmethod
-    def __horizontal_window(windowheight,windowwidth):
-        height= windowheight/10
-        width= windowwidth
-        return height,width 
-
-    @staticmethod
-    def __create_two_leaf_window(windowheight,windowwidth,leafdepth,):
-        leafmesh = bpy.data.meshes.new("WindowFrameMesh")
-        leafobject = bpy.data.objects.new("WindowFrame", leafmesh)
-        bpy.context.collection.objects.link(
-            leafobject)  # put object in collection
-        bm = bmesh.new()
-        bm.from_mesh(leafmesh)
-        
+    def __create_two_leaf_window(bm,windowheight,windowwidth,leafdepth,):
         format2leaf= random.randint(1,2)
+
         if (format2leaf==1):
             # vertical
             leafheight,leafwidth=Windows.__vertical_window(windowheight,windowwidth)
@@ -109,19 +76,11 @@ class Windows:
             leafheight,leafwidth=Windows.__horizontal_window(windowheight,windowwidth) 
             Windows.__create_vert(bm,-leafwidth,leafwidth,-leafdepth,(windowheight/2 + leafheight/2),(windowheight/2 - leafheight/2))
         
-        bm.to_mesh(leafmesh)
-        bm.free()
-        return leafobject
 
     @staticmethod
-    def __create_three_leaf_window(windowheight,windowwidth,leafdepth):
-        leafmesh = bpy.data.meshes.new("WindowFrameMesh")
-        leafobject = bpy.data.objects.new("WindowFrame", leafmesh)
-        bpy.context.collection.objects.link(
-            leafobject)  # put object in collection
-        bm = bmesh.new()
-        bm.from_mesh(leafmesh)
+    def __create_three_leaf_window(bm,windowheight,windowwidth,leafdepth):
         format3leaf=random.randint(1,6)
+
         if(format3leaf==1):
             # two vertical leafs
             leafheight,leafwidth=Windows.__vertical_window(windowheight,windowwidth)
@@ -170,19 +129,10 @@ class Windows:
             leaf2height,leaf2width=Windows.__horizontal_window(windowheight,windowwidth) 
             Windows.__create_vert(bm,leafwidth,windowwidth,-leafdepth,(windowheight/2 + leaf2height/2),(windowheight/2 - leaf2height/2))
         
-        bm.to_mesh(leafmesh)
-        bm.free()
-        return leafobject
-
     @staticmethod
-    def __create_four_leaf_window(windowheight,windowwidth,leafdepth):
-        leafmesh = bpy.data.meshes.new("WindowFrameMesh")
-        leafobject = bpy.data.objects.new("WindowFrame", leafmesh)
-        bpy.context.collection.objects.link(
-            leafobject)  # put object in collection
-        bm = bmesh.new()
-        bm.from_mesh(leafmesh)
+    def __create_four_leaf_window(bm,windowheight,windowwidth,leafdepth):
         format4leaf=random.randint(1,9)
+
         if(format4leaf==1):
             # three vertical leafs 
             leafheight,leafwidth=Windows.__vertical_window(windowheight,windowwidth)
@@ -265,9 +215,6 @@ class Windows:
             # vertical top
             leaf3height,leaf3width=Windows.__vertical_window(windowheight,windowwidth)
             Windows.__create_vert(bm,-leaf3width,leaf3width,-leafdepth,0,(windowheight/3 - leafheight/2))
-        bm.to_mesh(leafmesh)
-        bm.free()
-        return leafobject
 
     @staticmethod
     def __create_window_sill(windowwidth,leafdepth,windowframewidth):
@@ -286,7 +233,7 @@ class Windows:
         return windowsillobject
 
     @staticmethod
-    def __create_window_accessoir(windowheight,windowwidth,windowframewidth,accessoir):   
+    def __create_window_accessoir(windowheight,windowwidth,windowframewidth,leafdepth,accessoir):   
         windowaccessoirmesh = bpy.data.meshes.new("WindowAccesoirMesh")
         windowaccessoirobject = bpy.data.objects.new("WindowFrame", windowaccessoirmesh)
         bpy.context.collection.objects.link(
@@ -309,7 +256,40 @@ class Windows:
             x=1
         else:
             #window shutter / Fensterladen
-            x=1
+             # left
+            Windows.__create_vert(bm,(-windowwidth*2),(-windowwidth-windowframewidth),(-leafdepth*3),0,windowheight)
+            # design mittel top 
+            Windows.__create_vert(bm,(-windowwidth*2+windowwidth/4 ),(-windowwidth-windowframewidth-windowwidth/4),(-leafdepth*6),(windowheight - windowheight/10),(windowheight/2 + windowheight/12))
+            # design mittel middle
+            Windows.__create_vert(bm,(-windowwidth*2+windowwidth/4 ),(-windowwidth-windowframewidth-windowwidth/4),(-leafdepth*6),(windowheight/10),(windowheight/2 - windowheight/12))
+            # design left 
+            Windows.__create_vert(bm,(-windowwidth*2),(-windowwidth*2+windowwidth/7),(-leafdepth*6),0,windowheight)
+            # design right
+            Windows.__create_vert(bm,(-windowwidth-windowframewidth-windowwidth/7),(-windowwidth-windowframewidth),(-leafdepth*6),0,windowheight)
+            # design cross
+            Windows.__create_vert(bm,(-windowwidth*2),(-windowwidth-windowframewidth),(-leafdepth*6),(windowheight/2 + windowheight/20),(windowheight/2 - windowheight/20))
+            # design top 
+            Windows.__create_vert(bm,(-windowwidth*2),(-windowwidth-windowframewidth),(-leafdepth*6),(windowheight),(windowheight - windowheight/15))
+            # design bottom
+            Windows.__create_vert(bm,(-windowwidth*2),(-windowwidth-windowframewidth),(-leafdepth*6),(windowheight/15),0)
+
+            # right 
+            Windows.__create_vert(bm,(windowwidth+ windowframewidth),(windowwidth*2),(-leafdepth*3),0,windowheight)
+            # design left 
+            Windows.__create_vert(bm,(windowwidth+ windowframewidth),(windowwidth+ windowframewidth+ windowwidth/7),(-leafdepth*6),0,windowheight)
+            # design right
+            Windows.__create_vert(bm,(windowwidth*2- windowwidth/7),(windowwidth*2),(-leafdepth*6),0,windowheight)
+            # design top 
+            Windows.__create_vert(bm,(windowwidth+ windowframewidth),(windowwidth*2),(-leafdepth*6),(windowheight),(windowheight - windowheight/15))
+            # design bottom
+            Windows.__create_vert(bm,(windowwidth+ windowframewidth),(windowwidth*2),(-leafdepth*6),(windowheight/15),0)
+            # design cross
+            Windows.__create_vert(bm,(windowwidth+ windowframewidth),(windowwidth*2),(-leafdepth*6),(windowheight/2 + windowheight/20),(windowheight/2 - windowheight/20))
+            # design mittel top 
+            Windows.__create_vert(bm,(windowwidth+ windowframewidth+windowwidth/4 ),(windowwidth*2-windowwidth/4),(-leafdepth*6),(windowheight - windowheight/10),(windowheight/2 + windowheight/12))
+            # design mittel middle
+            Windows.__create_vert(bm,(windowwidth+ windowframewidth+windowwidth/4 ),(windowwidth*2-windowwidth/4),(-leafdepth*6),(windowheight/10),(windowheight/2 - windowheight/12))
+            
         bm.to_mesh(windowaccessoirmesh)
         bm.free()
         return windowaccessoirobject
@@ -317,21 +297,30 @@ class Windows:
     @staticmethod
     def create_window(windowheight, windowwidth, leafdepth, windowframewidth, windowdepth, windowsill, windowaccessoir):
         windowsillr = random.randint(1,2)
-        windowaccessoirr = random.uniform(1,3)
+        windowaccessoirr = random.randint(1,3)
+        windowleafr = random.randint(1,4)
 
+        #create object
         basis: bpy.types.object = Windows.__create_random_basis(
             windowheight, windowwidth, windowdepth)
-        glass: bpy.types.Material = Materials.create_glass_material()
-        basis.data.materials.append(glass)
         windowframe: bpy.types.object = Windows.__create_window_frame(windowheight,windowwidth,leafdepth,windowframewidth)
+        
+        #material
+        glass: bpy.types.Material = Materials.create_glass_material()
         wood:  bpy.types.Material = Materials.create_wood_material()
+
+        # append materials
+        basis.data.materials.append(glass)
         windowframe.data.materials.append(wood)
-        windowleaf: bpy.types.object = Windows.__create_windowleaf(windowheight,windowwidth,leafdepth)
-        if windowleaf != None:
+        
+        if (windowleafr!= 1):
+            windowleaf: bpy.types.object = Windows.__create_windowleaf(windowheight,windowwidth,leafdepth,windowleafr)
             windowleaf.data.materials.append(wood)
         if (windowsillr==1):
             windowsill: bpy.types.object =Windows.__create_window_sill(windowwidth,leafdepth,windowframewidth)
             windowsill.data.materials.append(wood)
         if (windowaccessoirr!=1):
-            windowaccessoir: bpy.types.object =Windows.__create_window_accessoir(windowheight,windowwidth,windowframewidth,windowaccessoirr)
+            windowaccessoir: bpy.types.object =Windows.__create_window_accessoir(windowheight,windowwidth,windowframewidth,leafdepth,windowaccessoirr)
             windowaccessoir.data.materials.append(wood)
+        #parenting
+        Gen.parenting([windowframe, windowleaf, windowsill, windowaccessoir], basis)
