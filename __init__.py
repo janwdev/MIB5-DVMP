@@ -11,6 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from curses import window
 import bpy
 
 from .Scripts.doors import Door
@@ -35,9 +36,71 @@ class BUILDINGGENERATOR(bpy.types.Operator):
     bl_label = "Generate Building"         # Display name in the interface.
     bl_options = {'REGISTER', 'UNDO'}  # Enable undo for the operator.
 
+    #UI Slider Options TODO M oder CM???
+
+    #Base Enum List Propertys (identifier, name, description)
+    BASE_WIDTH: bpy.props.IntProperty(name="Base Width", default=10, min=3, max=100)
+    BASE_LENGTH: bpy.props.IntProperty(name="Base Length", default=10, min=3, max=100)
+    BASE_HEIGHT: bpy.props.IntProperty(name="Base Height", default=2, min=2, max=100)
+    BASE_WALLTHICKNESS: bpy.props.FloatProperty(name="Base Wall Thickness", default=0.2, min=1, max=50)
+    BASE_MATERIAL: bpy.props.EnumProperty(items = [('None','No Smooth','')],name="Base Material")
+    # TODO Define Materials
+
+    #Roof Enum List Propertys (identifier, name, description)
+    # ROOF_WIDTH: bpy.props.IntProperty(name="Roof Width", default=10, min=3, max=100) //defined by base
+    # ROOF_LENGTH: bpy.props.IntProperty(name="Roof Length", default=10, min=3, max=100) // defined by base
+    ROOF_HEIGHT: bpy.props.IntProperty(name="Roof Height", default=2, min=2, max=100)
+    ROOF_OVERHANG_SIZE: bpy.props.FloatProperty(name="Roof Overhang Size", default=0.2, min=0.01, max=10)
+    ROOF_OVERHANG: bpy.props.BoolProperty(name="Roof Overhang", default=True) #OVERHNAG is also an length of overhang attribute. Insert here and in function call
+    ROOF_TYPE: bpy.props.EnumProperty(items = [('TriangleRoof','Triangle Roof',''),('FlatRoof','Flat Roof',''),('PointyTriangleRoof','Pointy Triangle Roof','')],name="Roof Type")
+    ROOF_MATERIAL: bpy.props.EnumProperty(items = [('None','No Smooth','')],name="Roof Material")
+    # TODO Define Materials
+
+    #Door Enum List Propertys (identifier, name, description)
+    DOOR_WIDTH: bpy.props.IntProperty(name="Door Width", default=100, min=100, max=500)
+    DOOR_HEIGHT: bpy.props.IntProperty(name="Door Height", default=100, min=100, max=500)
+    DOOR_THICKNESS: bpy.props.FloatProperty(name="Door Thickness", default=0.03, min=0.03, max=50)
+    DOOR_QUANTITY: bpy.props.IntProperty(name="Door Quantity", default=1, min=0, max=10)
+
+    DOOR_FRAMEWIDTH: bpy.props.IntProperty(name="Door Frame Width", default=100, min=100, max=500)
+    DOOR_FRAMEHEIGHT: bpy.props.IntProperty(name="Door Frame Height", default=100, min=100, max=500)
+
+    DOOR_MATERIAL: bpy.props.EnumProperty(items = [('None','No Smooth','')],name="Door Material")
+    # TODO Define Materials
+    DOOR_KEYHOLEMATERIAL: bpy.props.EnumProperty(items = [('None','No Smooth','')],name="Keyhole Material")
+    # TODO Define Materials
+    DOOR_DOORKNOBMATERIAL: bpy.props.EnumProperty(items = [('None','No Smooth','')],name="Doorknob Material")
+    # TODO Define Materials
+    DOOR_FRAMEMATERIAL: bpy.props.EnumProperty(items = [('None','No Smooth','')],name="Door Frame Material")
+    # TODO Define Materials
+
+    #Rail Enum List Propertys (identifier, name, description)
+    RAIL_LENGTH: bpy.props.IntProperty(name="Rail Length", default=10, min=1, max=50)
+    RAIL_HEIGHT: bpy.props.IntProperty(name="Rail Height", default=2, min=1, max=50)
+    RAIL_VERTICALSTRUTS: bpy.props.IntProperty(name="Rail Vertical Struts", default=5, min=1, max=200)
+    RAIL_FILLSTRUTS: bpy.props.BoolProperty(name="Fill Vertical Struts", default=False)
+    RAIL_QUANTITY: bpy.props.IntProperty(name="Rail Quantity", default=1, min=0, max=10)
+    RAIL_MATERIAL: bpy.props.EnumProperty(items = [('None','No Smooth','')],name="Roof Material")
+    # TODO Define Materials
+
+    #Window Enum List Propertys (identifier, name, description) TODO Abhängigkeiten von Wandbreite
+    WINDOW_LENGTH: bpy.props.IntProperty(name="Window Length", default=2, min=1, max=50)
+    WINDOW_HEIGHT: bpy.props.IntProperty(name="Window Height", default=2, min=1, max=50)
+    WINDOW_THICKNESS: bpy.props.FloatProperty(name="Window Thickness", default=0.05, min=0.02, max=1)
+    WINDOW_BRACING: bpy.props.IntProperty(name="Window Bracing", default=2, min=0, max=3)
+    WINDOW_ACCESSORY: bpy.props.IntProperty(name="Window Accessory (0 = none)", default=2, min=0, max=2)
+    WINDOW_SILL: bpy.props.BoolProperty(name="Window Sill", default=True)
+    WINDOW_QUANTITY: bpy.props.IntProperty(name="Window Quantity", default=1, min=0, max=10)
+    WINDOW_MATERIAL: bpy.props.EnumProperty(items = [('None','No Smooth','')],name="Roof Material")
+    # TODO Define Materials
+    WINDOW_SILLMATERIAL: bpy.props.EnumProperty(items = [('None','No Smooth','')],name="Roof Material")
+    # TODO Define Materials
+
     def execute(self, context):        # execute() is called when running the operator.
         bpy.data.scenes["Scene"].eevee.use_ssr = True
-        door = Door.generate_door()  # Masse in cm
+        print(self.ROOF_TYPE)
+        
+        #roof = Roof.generateRoof(self.ROOF_TYPE, self.BASE_LENGTH, self.BASE_WIDTH, self.ROOF_HEIGHT, "Roof", "RoofMesh", self.ROOF_OVERHANG, self.ROOF_OVERHANG_SIZE)
         # Roof.createFlatRoof(5, 5, 2, "Roof", "Roof", True, 2)  # length, width, height
         return {'FINISHED'}            # Lets Blender know the operator finished successfully.
 

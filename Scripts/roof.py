@@ -1,10 +1,20 @@
 import bpy
 import bmesh
+from numpy import equal
 
 
 class Roof:
     @staticmethod
-    def createTriangleRoof(length, width, height, objectName, meshName, overhang, overhangThickness):
+    def generateRoof(type, length, width, height, objectName, meshName, overhang, overhangSize):
+        if type == "TriangleRoof":
+            Roof.createTriangleRoof(length, width, height, objectName, meshName, overhang, overhangSize)
+        if type == "FlatRoof":
+            Roof.createFlatRoof(length, width, height, objectName, meshName, overhang, overhangSize)
+        if type == "PointyTriangleRoof":
+            Roof.createPointyTriangleRoof(length, width, height, objectName, meshName, overhang, overhangSize)
+
+    @staticmethod
+    def createTriangleRoof(length, width, height, objectName, meshName, overhang, overhangSize):
 
         mesh = bpy.data.meshes.new(meshName)  # add a new mesh
 
@@ -34,8 +44,8 @@ class Roof:
                 verts.append(o)  # add all verts from array
 
             # duplicate verts for overhangThickness
-            overhangThickness_verts = [(0 + overhangThickness, 0 - overhang, 0), (width - overhangThickness, 0 - overhang, 0), (width/2, 0 - overhang, height - overhangThickness), (0 + overhangThickness, length + overhang, 0), (width - overhangThickness, length + overhang, 0), (width/2, length + overhang, height -
-                                                                                                                                                                                                                                                                                       overhangThickness), (width/2, length + overhang, height - overhangThickness), (0 + overhangThickness, 0, 0), (width - overhangThickness, 0, 0), (width/2, 0, height - overhangThickness), (0 + overhangThickness, length, 0), (width - overhangThickness, length, 0), (width/2, length, height - overhangThickness)]
+            overhangThickness_verts = [(0 + overhangSize, 0 - overhang, 0), (width - overhangSize, 0 - overhang, 0), (width/2, 0 - overhang, height - overhangSize), (0 + overhangSize, length + overhang, 0), (width - overhangSize, length + overhang, 0), (width/2, length + overhang, height -
+                                                                                                                                                                                                                                                                                       overhangSize), (width/2, length + overhang, height - overhangSize), (0 + overhangSize, 0, 0), (width - overhangSize, 0, 0), (width/2, 0, height - overhangSize), (0 + overhangSize, length, 0), (width - overhangSize, length, 0), (width/2, length, height - overhangSize)]
             for o in overhangThickness_verts:
                 verts.append(o)  # add all verts from array
 
@@ -107,7 +117,7 @@ class Roof:
         bm.free()  # always do this when finished
 
     @staticmethod
-    def createFlatRoof(length, width, height, objectName, meshName, overhang, overhangsize):
+    def createFlatRoof(length, width, height, objectName, meshName, overhang, overhangSize):
 
         mesh = bpy.data.meshes.new(meshName)  # add a new mesh
 
@@ -130,8 +140,8 @@ class Roof:
                                                                                     height), (0, length, height), (width, length, height), (width, 0, height)]
 
         if overhang is True:
-            verts = [(-overhangsize, -overhangsize, 0), (-overhangsize, length + overhangsize, 0), (width + overhangsize, length + overhangsize, 0), (width + overhangsize, -overhangsize, 0),
-                     (-overhangsize, -overhangsize, height), (-overhangsize, length + overhangsize, height), (width + overhangsize, length + overhangsize, height), (width + overhangsize, -overhangsize, height)]
+            verts = [(-overhangSize, -overhangSize, 0), (-overhangSize, length + overhangSize, 0), (width + overhangSize, length + overhangSize, 0), (width + overhangSize, -overhangSize, 0),
+                     (-overhangSize, -overhangSize, height), (-overhangSize, length + overhangSize, height), (width + overhangSize, length + overhangSize, height), (width + overhangSize, -overhangSize, height)]
 
         for v in verts:
             bm.verts.new(v)  # add all verts from array
