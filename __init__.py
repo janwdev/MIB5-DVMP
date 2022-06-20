@@ -13,12 +13,13 @@
 
 from curses import window
 import bpy
+import random
 
 from .Scripts.doors import Door
-# from .Scripts.handrail import handrail
+from .Scripts.handrail import Handrail
 from .Scripts.roof import Roof
-# from .Scripts import window
 from .Scripts.generic import Gen
+from .Scripts.window import Windows
 
 bl_info = {
     "name" : "Building Generator",
@@ -102,6 +103,30 @@ class BUILDINGGENERATOR(bpy.types.Operator):
         
         #roof = Roof.generateRoof(self.ROOF_TYPE, self.BASE_LENGTH, self.BASE_WIDTH, self.ROOF_HEIGHT, "Roof", "RoofMesh", self.ROOF_OVERHANG, self.ROOF_OVERHANG_SIZE)
         # Roof.createFlatRoof(5, 5, 2, "Roof", "Roof", True, 2)  # length, width, height
+        
+        # objects = bpy.data.objects
+        # wall = False
+        # scale_x = 0.09
+        # scale_y = 0.09
+        # length = 10
+        # height = 0.9
+        # amount = 7
+        # Handrail.handrail(objects, wall, scale_x, scale_y, length, height, amount)
+
+        # windowheight = random.randint(4, 10)
+        # windowwidth = random.randint(2, 7)
+        # leafdepth = random.uniform(0.05, 0.1)
+        # windowframewidth = random.uniform(0.05, 0.2)
+        # windowdepth = random.uniform(0.2, 0.8)
+
+        # windowsill = random.randint(1, 2)
+        # windowaccessoir = random.randit(1, 3)
+        #windowleaf = random.randint(1,4)
+
+        # Windows.create_window(windowheight, windowwidth, leafdepth,
+        #                     windowframewidth, windowdepth, windowsill, windowaccessoir,windowleaf)
+
+
         return {'FINISHED'}            # Lets Blender know the operator finished successfully.
 
 
@@ -112,10 +137,10 @@ def menu_func(self, context):
 
 def register():
     from .Scripts.doors import Door
-    # from .Scripts.handrail import handrail
+    from .Scripts.handrail import Handrail
     from .Scripts.roof import Roof
-    # from .Scripts import window
     from .Scripts.generic import Gen
+    from .Scripts.window import Windows
     print("starting")
     bpy.utils.register_class(BUILDINGGENERATOR)
     bpy.types.VIEW3D_MT_object.append(menu_func)  # Adds the new operator to an existing menu.

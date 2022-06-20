@@ -142,10 +142,10 @@ class Materials():
         c = 0.08
         c_2 = 0.2
         ramp = Materials.adjust_ramp_pos(ramp, 0, 0.236)
-        ramp = Materials.adjust_ramp_color(ramp, 0, (c, c, c, 1))
+        ramp = Materials.adjust_ramp_color(ramp, 0,(c,c,c,1))
         ramp = Materials.adjust_ramp_pos(ramp, 1, 0.830)
-        ramp = Materials.adjust_ramp_color(ramp, 1, (c_2, c_2, c_2, 1))
-
+        ramp = Materials.adjust_ramp_color(ramp, 1,(c_2,c_2,c_2,1))
+        
         # roughness
         musgrave.inputs[2].default_value = 0.1
         musgrave.inputs[3].default_value = 16
@@ -185,22 +185,17 @@ class Materials():
         Materials.link_nodes(material, noise_mix_rgb, 0, wave, 0)
 
         scratch_ramp = Materials.adjust_ramp_pos(scratch_ramp, 0, 0.955)
-        scratch_ramp = Materials.adjust_ramp_color(
-            scratch_ramp, 0, (1, 1, 1, 1))
+        scratch_ramp = Materials.adjust_ramp_color(scratch_ramp, 0, (1, 1, 1, 1))
         scratch_ramp = Materials.adjust_ramp_pos(scratch_ramp, 1, 1)
-        scratch_ramp = Materials.adjust_ramp_color(
-            scratch_ramp, 1, (0, 0, 0, 1))
+        scratch_ramp = Materials.adjust_ramp_color(scratch_ramp, 1, (0, 0, 0, 1))
 
         Materials.link_nodes(material, wave, 0, scratch_ramp, 0)
 
         scratch_noise_ramp.color_ramp.interpolation = "CONSTANT"
-        scratch_noise_ramp = Materials.adjust_ramp_pos(
-            scratch_noise_ramp, 0, 0.480)
-        scratch_noise_ramp = Materials.adjust_ramp_pos(
-            scratch_noise_ramp, 1, 0.520)
+        scratch_noise_ramp = Materials.adjust_ramp_pos(scratch_noise_ramp, 0, 0.480)
+        scratch_noise_ramp = Materials.adjust_ramp_pos(scratch_noise_ramp, 1, 0.520)
 
-        Materials.link_nodes(material, scratch_noise_2,
-                             0, scratch_noise_ramp, 0)
+        Materials.link_nodes(material, scratch_noise_2, 0, scratch_noise_ramp, 0)
         Materials.link_nodes(material, scratch_noise_ramp, 0, math_subtract, 0)
         Materials.link_nodes(material, scratch_ramp, 0, math_subtract, 1)
         math_subtract.operation = "SUBTRACT"
@@ -240,8 +235,7 @@ class Materials():
         Materials.link_nodes(material, math_subtract, 0, add_bumps, 0)
         Materials.link_nodes(material, ramp, 0, add_bumps, 1)
         Materials.link_nodes(material, add_bumps, 0, bump, 2)
-        Materials.link_nodes(material, bump, 0, bsdf,
-                             Materials.bsdf_normal_input)
+        Materials.link_nodes(material, bump, 0, bsdf, Materials.bsdf_normal_input)
         return material
 
     def plaster():
@@ -262,9 +256,10 @@ class Materials():
         ramp = Materials.add_ramp_node(material)
         c = 0.223
         c_darker = 0.116
-        ramp = Materials.adjust_ramp(ramp, 0, 0.187, (c, c, c, 1))
-        ramp = Materials.adjust_ramp(
-            ramp, 1, 0.773, (c_darker, c_darker, c_darker, 1))
+        ramp = Materials.adjust_ramp_pos(ramp, 0, 0.187)
+        ramp = Materials.adjust_ramp_color(ramp, 0, (c, c, c, 1))
+        ramp = Materials.adjust_ramp_pos(ramp, 1, 0.773)
+        ramp = Materials.adjust_ramp_color(ramp, 1, (c_darker, c_darker, c_darker, 1))
 
         bump = Materials.add_bump_node(material)
         bump.inputs[0].default_value = 0.5
@@ -274,8 +269,8 @@ class Materials():
         noise_2 = Materials.add_node(material, "ShaderNodeTexNoise")
 
         bump_ramp = Materials.add_ramp_node(material)
-        bump_ramp = Materials.adjust_ramp(bump_ramp, 0, 0.290)
-        bump_ramp = Materials.adjust_ramp(bump_ramp, 1, 0.684)
+        bump_ramp = Materials.adjust_ramp_pos(bump_ramp, 0, 0.290)
+        bump_ramp = Materials.adjust_ramp_pos(bump_ramp, 1, 0.684)
 
         mix_rgb = Materials.add_node(material, "ShaderNodeMixRGB")
 
@@ -309,33 +304,32 @@ class Materials():
         return node
 
     def link_nodes(material, s_1, s1_output, s_2, s_2_input):
-        material.node_tree.links.new(
-            s_2.inputs[s_2_input], s_1.outputs[s1_output])
+        material.node_tree.links.new(s_2.inputs[s_2_input], s_1.outputs[s1_output])
 
     def add_tex_coords_node(material):
         return Materials.add_node(material, "ShaderNodeTexCoord")
-
     def add_mapping_node(material):
         return Materials.add_node(material, "ShaderNodeMapping")
-
     def add_ramp_node(material):
         return Materials.add_node(material, "ShaderNodeValToRGB")
-
     def add_bump_node(material):
         return Materials.add_node(material, "ShaderNodeBump")
-
     def add_noise_node(material):
         return Materials.add_node(material, "ShaderNodeTexNoise")
-
+    def add_mix_rgb_node(material):
+        return Materials.add_node(material, "ShaderNodeMixRGB")
+    def add_math_node(material):
+        return Materials.add_node(material, "ShaderNodeMath")
     def get_node(material, name):
         return material.node_tree.nodes.get(name)
-
     def get_output(material):
         return Materials.get_node(material, "Material Output")
-
-    def adjust_ramp(ramp, handle_index, pos, color=-1):
-        if(color != -1):
-            ramp.color_ramp.elements[handle_index].color = color
-
+    def adjust_ramp_pos(ramp, handle_index, pos):
+       
         ramp.color_ramp.elements[handle_index].position = pos
+        return ramp
+    def adjust_ramp_color(ramp, handle_index, color ):
+        
+        ramp.color_ramp.elements[handle_index].color = color
+            
         return ramp
