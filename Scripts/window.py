@@ -26,7 +26,6 @@ class Windows:
         bm.faces.new((vert4_2, vert4, vert3, vert3_2))
         bm.faces.new((vert1_2, vert1, vert2, vert2_2))
 
-
     @staticmethod
     def __create_random_basis(windowheight, windowwidth,  windowdepth):
 
@@ -76,7 +75,6 @@ class Windows:
             leafheight,leafwidth=Windows.__horizontal_window(windowheight,windowwidth) 
             Windows.__create_vert(bm,-leafwidth,leafwidth,-leafdepth,(windowheight/2 + leafheight/2),(windowheight/2 - leafheight/2))
         
-
     @staticmethod
     def __create_three_leaf_window(bm,windowheight,windowwidth,leafdepth):
         format3leaf=random.randint(1,6)
@@ -242,64 +240,37 @@ class Windows:
         bm.from_mesh(windowaccessoirmesh)
         if (accessoir==2):
             #Blackbox / Rolladenbox
-            blackbox = random.randint(1,3)
             blackboxdepth = random.uniform(1,1.6)
-            if(blackbox==1):
-                #square
-                Windows.__create_vert(bm,-windowwidth - windowframewidth,windowwidth + windowframewidth,-blackboxdepth,windowheight,windowheight+blackboxdepth)
-            elif(blackbox==2):
-                #square with one flat corner
-                a=9
-            else:
-                #round
-                d=2
-            x=1
+            Windows.__create_vert(bm,-windowwidth - windowframewidth,windowwidth + windowframewidth,-blackboxdepth,windowheight,windowheight+blackboxdepth)
         else:
-            #window shutter / Fensterladen
-             # left
+            # Windowshutter
+            #  left
             Windows.__create_vert(bm,(-windowwidth*2),(-windowwidth-windowframewidth),(-leafdepth*3),0,windowheight)
-            # design mittel top 
             Windows.__create_vert(bm,(-windowwidth*2+windowwidth/4 ),(-windowwidth-windowframewidth-windowwidth/4),(-leafdepth*6),(windowheight - windowheight/10),(windowheight/2 + windowheight/12))
-            # design mittel middle
             Windows.__create_vert(bm,(-windowwidth*2+windowwidth/4 ),(-windowwidth-windowframewidth-windowwidth/4),(-leafdepth*6),(windowheight/10),(windowheight/2 - windowheight/12))
-            # design left 
             Windows.__create_vert(bm,(-windowwidth*2),(-windowwidth*2+windowwidth/7),(-leafdepth*6),0,windowheight)
-            # design right
             Windows.__create_vert(bm,(-windowwidth-windowframewidth-windowwidth/7),(-windowwidth-windowframewidth),(-leafdepth*6),0,windowheight)
-            # design cross
             Windows.__create_vert(bm,(-windowwidth*2),(-windowwidth-windowframewidth),(-leafdepth*6),(windowheight/2 + windowheight/20),(windowheight/2 - windowheight/20))
-            # design top 
             Windows.__create_vert(bm,(-windowwidth*2),(-windowwidth-windowframewidth),(-leafdepth*6),(windowheight),(windowheight - windowheight/15))
-            # design bottom
             Windows.__create_vert(bm,(-windowwidth*2),(-windowwidth-windowframewidth),(-leafdepth*6),(windowheight/15),0)
 
             # right 
             Windows.__create_vert(bm,(windowwidth+ windowframewidth),(windowwidth*2),(-leafdepth*3),0,windowheight)
-            # design left 
             Windows.__create_vert(bm,(windowwidth+ windowframewidth),(windowwidth+ windowframewidth+ windowwidth/7),(-leafdepth*6),0,windowheight)
-            # design right
             Windows.__create_vert(bm,(windowwidth*2- windowwidth/7),(windowwidth*2),(-leafdepth*6),0,windowheight)
-            # design top 
             Windows.__create_vert(bm,(windowwidth+ windowframewidth),(windowwidth*2),(-leafdepth*6),(windowheight),(windowheight - windowheight/15))
-            # design bottom
             Windows.__create_vert(bm,(windowwidth+ windowframewidth),(windowwidth*2),(-leafdepth*6),(windowheight/15),0)
-            # design cross
             Windows.__create_vert(bm,(windowwidth+ windowframewidth),(windowwidth*2),(-leafdepth*6),(windowheight/2 + windowheight/20),(windowheight/2 - windowheight/20))
-            # design mittel top 
             Windows.__create_vert(bm,(windowwidth+ windowframewidth+windowwidth/4 ),(windowwidth*2-windowwidth/4),(-leafdepth*6),(windowheight - windowheight/10),(windowheight/2 + windowheight/12))
-            # design mittel middle
             Windows.__create_vert(bm,(windowwidth+ windowframewidth+windowwidth/4 ),(windowwidth*2-windowwidth/4),(-leafdepth*6),(windowheight/10),(windowheight/2 - windowheight/12))
-            
+              
         bm.to_mesh(windowaccessoirmesh)
         bm.free()
         return windowaccessoirobject
 
     @staticmethod
-    def create_window(windowheight, windowwidth, leafdepth, windowframewidth, windowdepth, windowsill, windowaccessoir):
-        windowsillr = random.randint(1,2)
-        windowaccessoirr = random.randint(1,3)
-        windowleafr = random.randint(1,4)
-
+    def create_window(windowheight, windowwidth, leafdepth, windowframewidth, windowdepth, windowsillr, windowaccessoirr,windowleafr):
+        
         #create object
         basis: bpy.types.object = Windows.__create_random_basis(
             windowheight, windowwidth, windowdepth)
