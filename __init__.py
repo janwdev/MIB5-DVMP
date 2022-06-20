@@ -57,7 +57,7 @@ class BUILDINGGENERATOR(bpy.types.Operator):
         # windowdepth = random.uniform(0.2, 0.8)
 
         # windowsill = random.randint(1, 2)
-        # windowaccessoir = random.uniform(1, 3)
+        # windowaccessoir = random.randit(1, 3)
         #windowleaf = random.randint(1,4)
 
         # Windows.create_window(windowheight, windowwidth, leafdepth,
