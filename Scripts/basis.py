@@ -50,7 +50,7 @@ class Basis:
         return basisobject
 
     @staticmethod
-    def create_basis(width, height,lenght, wallthickness):
+    def create_basis(width, height,length, wallthickness):
         height = height*2.2
 
         basis: bpy.types.object = Basis.create_square(width, height,length,wallthickness)
