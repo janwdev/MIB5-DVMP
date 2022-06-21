@@ -115,16 +115,13 @@ class BUILDINGGENERATOR(bpy.types.Operator):
 
         # windowheight = random.randint(4, 10)
         # windowwidth = random.randint(2, 7)
-        # leafdepth = random.uniform(0.05, 0.1)
-        # windowframewidth = random.uniform(0.05, 0.2)
         # windowdepth = random.uniform(0.2, 0.8)
 
         # windowsill = random.randint(1, 2)
         # windowaccessoir = random.randit(1, 3)
-        #windowleaf = random.randint(1,4)
+        # windowleaf = random.randint(1,4)
 
-        # Windows.create_window(windowheight, windowwidth, leafdepth,
-        #                     windowframewidth, windowdepth, windowsill, windowaccessoir,windowleaf)
+        # Windows.create_window(windowheight, windowwidth, windowdepth, windowsill, windowaccessoir,windowleaf)
 
 
         return {'FINISHED'}            # Lets Blender know the operator finished successfully.
