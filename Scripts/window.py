@@ -291,7 +291,9 @@ class Windows:
         return windowaccessoirobject
 
     @staticmethod
-    def create_window(windowheight, windowwidth, leafdepth, windowframewidth, windowdepth, windowsillr, windowaccessoirr,windowleafr):
+    def create_window(windowheight, windowwidth, windowdepth, windowsillr, windowaccessoirr,windowleafr):
+        leafdepth = windowdepth/4
+        windowframewidth = windowheight/20
         #create object
         basis: bpy.types.object = Windows.__create_random_basis(
             windowheight, windowwidth, windowdepth)
