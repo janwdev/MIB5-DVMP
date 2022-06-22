@@ -19,6 +19,7 @@ from .Scripts.handrail import Handrail
 from .Scripts.roof import Roof
 from .Scripts.generic import Gen
 from .Scripts.window import Windows
+from .Scripts.basis import Basis
 
 bl_info = {
     "name" : "Building Generator",
@@ -99,7 +100,7 @@ class BUILDINGGENERATOR(bpy.types.Operator):
     def execute(self, context):        # execute() is called when running the operator.
         bpy.data.scenes["Scene"].eevee.use_ssr = True
         print(self.ROOF_TYPE)
-        Windows.create_window(1,1,1,1,1,1,1,1)
+        #base = Basis.create_basis(self.BASE_WIDTH, self.BASE_HEIGHT, self.BASE_LENGTH, self.BASE_WALLTHICKNESS)
         #roof = Roof.generateRoof(self.ROOF_TYPE, self.BASE_LENGTH, self.BASE_WIDTH, self.ROOF_HEIGHT, "Roof", "RoofMesh", self.ROOF_OVERHANG, self.ROOF_OVERHANG_SIZE)
 
         window = Windows.create_window(self.WINDOW_HEIGHT, self.WINDOW_LENGTH, )
@@ -138,6 +139,7 @@ def register():
     from .Scripts.roof import Roof
     from .Scripts.generic import Gen
     from .Scripts.window import Windows
+    from .Scripts.basis import Basis
     print("starting")
     bpy.utils.register_class(BUILDINGGENERATOR)
     bpy.types.VIEW3D_MT_object.append(menu_func)  # Adds the new operator to an existing menu.
