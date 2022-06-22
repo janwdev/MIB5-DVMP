@@ -11,7 +11,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from curses import window
 import bpy
 import random
 
@@ -100,10 +99,11 @@ class BUILDINGGENERATOR(bpy.types.Operator):
     def execute(self, context):        # execute() is called when running the operator.
         bpy.data.scenes["Scene"].eevee.use_ssr = True
         print(self.ROOF_TYPE)
-        
+        Windows.create_window(1,1,1,1,1,1,1,1)
         #roof = Roof.generateRoof(self.ROOF_TYPE, self.BASE_LENGTH, self.BASE_WIDTH, self.ROOF_HEIGHT, "Roof", "RoofMesh", self.ROOF_OVERHANG, self.ROOF_OVERHANG_SIZE)
-        # Roof.createFlatRoof(5, 5, 2, "Roof", "Roof", True, 2)  # length, width, height
-        
+
+        window = Windows.create_window(self.WINDOW_HEIGHT, self.WINDOW_LENGTH, )
+
         # objects = bpy.data.objects
         # wall = False
         # scale_x = 0.09
