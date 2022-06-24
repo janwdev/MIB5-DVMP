@@ -316,16 +316,33 @@ class Windows:
         # append materials
         basis.data.materials.append(glass)
         windowframe.data.materials.append(material)
-        
+        Gen.parenting([windowframe], basis)
         if (windowleafr!= 1):
             windowleaf: bpy.types.object = Windows.__create_windowleaf(windowheight,windowwidth,leafdepth,windowleafr)
             windowleaf.data.materials.append(material)
+            Gen.parenting([windowleaf], basis)
         if (windowsillr==1):
             windowsill: bpy.types.object =Windows.__create_window_sill(windowwidth,leafdepth,windowframewidth)
             windowsill.data.materials.append(sillmaterial)
+            Gen.parenting([ windowsill], basis)
         if (windowaccessoirr!=1):
             windowaccessoir: bpy.types.object =Windows.__create_window_accessoir(windowheight,windowwidth,windowframewidth,leafdepth,windowaccessoirr)
             windowaccessoir.data.materials.append(material)
+            Gen.parenting([ windowaccessoir], basis)
         #parenting
-        Gen.parenting([windowframe, windowleaf, windowsill, windowaccessoir], basis)
+
+        # if(windowleafr!=1 and windowsillr ==1 and windowaccessoirr!=1):
+        #     Gen.parenting([windowframe, windowleaf, windowsill, windowaccessoir], basis)
+        # elif(windowleafr!=1 and windowsillr ==1):
+        #     Gen.parenting([windowframe, windowleaf, windowsill], basis)
+        # elif(windowleafr!=1):
+        #     Gen.parenting([windowframe, windowleaf], basis)
+        # elif( windowsillr ==1 and windowaccessoirr!=1): 
+        #     Gen.parenting([windowframe, windowsill, windowaccessoir], basis)
+        # elif( windowsillr ==1): 
+        #     Gen.parenting([windowframe, windowsill], basis)
+        # elif(windowaccessoirr!=1): 
+        #     Gen.parenting([windowframe, windowaccessoir], basis)
+
+
         return basis

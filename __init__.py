@@ -77,8 +77,8 @@ class BUILDINGGENERATOR(bpy.types.Operator):
     WINDOW_LENGTH: bpy.props.IntProperty(name="Window Length (in CM)", default=120, min=10, max=500)
     WINDOW_HEIGHT: bpy.props.IntProperty(name="Window Height (in CM)", default=120, min=10, max=500)
     #WINDOW_THICKNESS: bpy.props.FloatProperty(name="Window Thickness", default=0.05, min=0.02, max=1) Abhängig von Wand Breite
-    WINDOW_BRACING: bpy.props.IntProperty(name="Window Bracing", default=2, min=0, max=3)
-    WINDOW_ACCESSORY: bpy.props.IntProperty(name="Window Accessory (0 = none)", default=2, min=0, max=2)
+    WINDOW_BRACING: bpy.props.IntProperty(name="Window Bracing", default=2, min=1, max=4)
+    WINDOW_ACCESSORY: bpy.props.IntProperty(name="Window Accessory (1 = none)", default=2, min=1, max=3)
     WINDOW_SILL: bpy.props.BoolProperty(name="Window Sill", default=True)
     WINDOW_QUANTITY: bpy.props.IntProperty(name="Window Quantity", default=1, min=0, max=10)
     WINDOW_MATERIAL: bpy.props.EnumProperty(items = [('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Roof Material")
