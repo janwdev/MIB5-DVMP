@@ -38,3 +38,6 @@ class Gen:
 
         mesh = bpy.context.object.data
         return mesh
+    @staticmethod
+    def cm_to_m(val):
+        return val/100
