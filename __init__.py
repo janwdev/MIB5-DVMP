@@ -54,17 +54,15 @@ class BUILDINGGENERATOR(bpy.types.Operator):
     ROOF_MATERIAL: bpy.props.EnumProperty(items = [('Brick','Brick',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Wood','Wood',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Roof Material")
 
     #Door Enum List Propertys (identifier, name, description)
-    DOOR_WIDTH: bpy.props.IntProperty(name="Door Width", default=100, min=100, max=500)
-    DOOR_HEIGHT: bpy.props.IntProperty(name="Door Height", default=100, min=100, max=500)
-    DOOR_THICKNESS: bpy.props.FloatProperty(name="Door Thickness", default=0.03, min=0.03, max=50)
+    DOOR_WIDTH: bpy.props.FloatProperty(name="Door Width", default=120.0, min=100.0, max=500.0)
+    DOOR_HEIGHT: bpy.props.FloatProperty(name="Door Height", default=210.0, min=100.0, max=500.0)
+    DOOR_THICKNESS: bpy.props.FloatProperty(name="Door Thickness", default=3.0, min=3.0, max=50)
     DOOR_QUANTITY: bpy.props.IntProperty(name="Door Quantity", default=1, min=0, max=10)
-
-    DOOR_FRAMEWIDTH: bpy.props.IntProperty(name="Door Frame Width", default=100, min=100, max=500)
-    DOOR_FRAMEHEIGHT: bpy.props.IntProperty(name="Door Frame Height", default=100, min=100, max=500)
-
+    DOOR_FRAMEWIDTH: bpy.props.FloatProperty(name="Door Frame Width", default=20.0, min=5.0, max=50.0)
+    DOOR_FRAMEHEIGHT: bpy.props.FloatProperty(name="Door Frame Height", default=20.0, min=5.0, max=50.0)
     DOOR_MATERIAL: bpy.props.EnumProperty(items = [('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Door Material")
-    DOOR_KEYHOLEMATERIAL: bpy.props.EnumProperty(items = [('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Keyhole Material")
-    DOOR_DOORKNOBMATERIAL: bpy.props.EnumProperty(items = [('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Doorknob Material")
+    DOOR_KEYHOLEMATERIAL: bpy.props.EnumProperty(items = [('Metal','Metal',''), ('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal 2','Metal2','')],name="Keyhole Material")
+    DOOR_DOORKNOBMATERIAL: bpy.props.EnumProperty(items = [('Metal','Metal',''), ('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal 2','Metal2','')],name="Doorknob Material")
     DOOR_FRAMEMATERIAL: bpy.props.EnumProperty(items = [('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Door Frame Material")
 
     #Rail Enum List Propertys (identifier, name, description)
@@ -112,6 +110,8 @@ class BUILDINGGENERATOR(bpy.types.Operator):
         # windowleaf = random.randint(1,4)
 
         # Windows.create_window(windowheight, windowwidth, windowdepth, windowsill, windowaccessoir,windowleaf)
+
+        Door.generate_door(self.DOOR_WIDTH, self.DOOR_HEIGHT, Gen.getMaterialFromEnm(self.DOOR_MATERIAL), self.DOOR_THICKNESS, self.DOOR_FRAMEWIDTH, self.BASE_WALLTHICKNESS, self.DOOR_FRAMEHEIGHT, self.DOOR_FRAMEMATERIAL, self.DOOR_KEYHOLEMATERIAL, self.DOOR_DOORKNOBMATERIAL)
 
 
         return {'FINISHED'}            # Lets Blender know the operator finished successfully.
