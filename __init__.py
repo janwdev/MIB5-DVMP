@@ -57,7 +57,7 @@ class BUILDINGGENERATOR(bpy.types.Operator):
     DOOR_WIDTH: bpy.props.FloatProperty(name="Door Width", default=120.0, min=100.0, max=500.0)
     DOOR_HEIGHT: bpy.props.FloatProperty(name="Door Height", default=210.0, min=100.0, max=500.0)
     DOOR_THICKNESS: bpy.props.FloatProperty(name="Door Thickness", default=3.0, min=3.0, max=50)
-    DOOR_QUANTITY: bpy.props.IntProperty(name="Door Quantity", default=1, min=0, max=10)
+    DOOR_QUANTITY: bpy.props.IntProperty(name="Door Quantity", default=1, min=0, max=4)
     DOOR_FRAMEWIDTH: bpy.props.FloatProperty(name="Door Frame Width", default=20.0, min=5.0, max=50.0)
     DOOR_FRAMEHEIGHT: bpy.props.FloatProperty(name="Door Frame Height", default=20.0, min=5.0, max=50.0)
     DOOR_MATERIAL: bpy.props.EnumProperty(items = [('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Door Material")
