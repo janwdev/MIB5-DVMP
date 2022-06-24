@@ -11,6 +11,8 @@ class Door:
     @staticmethod
     def __generate_normal_door(width: float, height: float, strength: float, cutout_frame: float):
 
+        cutout_frame = cutout_frame / 100
+
         mesh_name = "normal_door"
         mesh: bpy.types.Mesh = Gen.prepare_mesh(mesh_name, mesh_name)
         bm = bmesh.new()
@@ -56,7 +58,9 @@ class Door:
     @staticmethod
     def __generate_frame(width_door: float, height_door: float, cutout_door: float, width: float, strength: float, height: float):
 
-        cutout_2 = 3  # Was ist das
+        cutout_door = cutout_door/100
+
+        cutout_2 = 3 / 100  # Was ist das
 
         mesh_name = "normal_door_frame"
         mesh: bpy.types.Mesh = Gen.prepare_mesh(mesh_name, mesh_name)
@@ -121,6 +125,13 @@ class Door:
 
     @staticmethod
     def __generate_keyhole(door: bpy.types.Object, height_door: float, width_door: float, fspace: float, radius: float, depth: float, under_hold: float, rad_hole: float):
+        
+        radius = radius / 100
+        depth = depth
+        rad_hole = rad_hole / 100
+        under_hold = under_hold / 100
+        fspace = fspace / 100
+
         posx = width_door/2-fspace-radius
         posy = 0
         posz = height_door/2 - under_hold
@@ -159,6 +170,11 @@ class Door:
 
     @staticmethod
     def __generate_doorhandle(height_door: float, width_door: float, fspace: float, radius: float, length_x: float, length_y: float):
+
+        radius = radius / 100
+        length_x = length_x/100
+        length_y = length_y/100
+        fspace = fspace/100
 
         posx = width_door/2-fspace-radius
         posy = 0
@@ -221,7 +237,7 @@ class Door:
             door_width, door_height, door_strength, cutout_frame)
 
         keyhole = Door.__generate_keyhole(
-            normal_door, door_height, door_width, keyhole_space_from_doorside, keyhole_radius, door_strength+1, keyhole_under_hold, keyhole_hole_radius)
+            normal_door, door_height, door_width, keyhole_space_from_doorside, keyhole_radius, door_strength+1/100, keyhole_under_hold, keyhole_hole_radius)
         door_handle = Door.__generate_doorhandle(
             door_height, door_width, handle_space_from_doorside, handle_radius, handle_away_from_door_length, handle_length)
         frame = Door.__generate_frame(

@@ -48,71 +48,49 @@ class BUILDINGGENERATOR(bpy.types.Operator):
 
     #Roof Enum List Propertys (identifier, name, description)
     ROOF_HEIGHT: bpy.props.IntProperty(name="Roof Height (in M)", default=2, min=2, max=100)
-    ROOF_OVERHANG_SIZE: bpy.props.IntProperty(name="Roof Overhang Size (in CM)", default=0.2, min=0.01, max=10)
+    ROOF_OVERHANG_SIZE: bpy.props.IntProperty(name="Roof Overhang Size (in CM)", default=1, min=1, max=200)
     ROOF_OVERHANG: bpy.props.BoolProperty(name="Roof Overhang", default=True) #OVERHNAG is also an length of overhang attribute. Insert here and in function call
     ROOF_TYPE: bpy.props.EnumProperty(items = [('TriangleRoof','Triangle Roof',''),('FlatRoof','Flat Roof',''),('PointyTriangleRoof','Pointy Triangle Roof','')],name="Roof Type")
     ROOF_MATERIAL: bpy.props.EnumProperty(items = [('Brick','Brick',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Wood','Wood',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Roof Material")
 
     #Door Enum List Propertys (identifier, name, description)
-    DOOR_WIDTH: bpy.props.FloatProperty(name="Door Width", default=120.0, min=100.0, max=500.0)
-    DOOR_HEIGHT: bpy.props.FloatProperty(name="Door Height", default=210.0, min=100.0, max=500.0)
-    DOOR_THICKNESS: bpy.props.FloatProperty(name="Door Thickness", default=3.0, min=3.0, max=50)
-    DOOR_QUANTITY: bpy.props.IntProperty(name="Door Quantity", default=1, min=0, max=4)
-    DOOR_FRAMEWIDTH: bpy.props.FloatProperty(name="Door Frame Width", default=20.0, min=5.0, max=50.0)
-    DOOR_FRAMEHEIGHT: bpy.props.FloatProperty(name="Door Frame Height", default=20.0, min=5.0, max=50.0)
+    DOOR_WIDTH: bpy.props.FloatProperty(name="Door Width (in CM)", default=120.0, min=100.0, max=500.0)
+    DOOR_HEIGHT: bpy.props.FloatProperty(name="Door Height (in CM)", default=210.0, min=100.0, max=500.0)
+    DOOR_THICKNESS: bpy.props.FloatProperty(name="Door Thickness (in CM)", default=3.0, min=3.0, max=50)
+    DOOR_QUANTITY: bpy.props.IntProperty(name="Door Quantity (in CM)", default=1, min=0, max=4)
+    DOOR_FRAMEWIDTH: bpy.props.FloatProperty(name="Door Frame Width (in CM)", default=20.0, min=5.0, max=50.0)
+    DOOR_FRAMEHEIGHT: bpy.props.FloatProperty(name="Door Frame Height (in CM)", default=20.0, min=5.0, max=50.0)
     DOOR_MATERIAL: bpy.props.EnumProperty(items = [('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Door Material")
     DOOR_KEYHOLEMATERIAL: bpy.props.EnumProperty(items = [('Metal','Metal',''), ('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal 2','Metal2','')],name="Keyhole Material")
     DOOR_DOORKNOBMATERIAL: bpy.props.EnumProperty(items = [('Metal','Metal',''), ('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal 2','Metal2','')],name="Doorknob Material")
     DOOR_FRAMEMATERIAL: bpy.props.EnumProperty(items = [('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Door Frame Material")
 
     #Rail Enum List Propertys (identifier, name, description)
-    RAIL_LENGTH: bpy.props.IntProperty(name="Rail Length", default=10, min=1, max=50)
-    RAIL_HEIGHT: bpy.props.IntProperty(name="Rail Height", default=2, min=1, max=50)
-    RAIL_VERTICALSTRUTS: bpy.props.IntProperty(name="Rail Vertical Struts", default=5, min=1, max=200)
+    #RAIL_LENGTH: bpy.props.IntProperty(name="Rail Length", default=10, min=1, max=50)
+    #RAIL_HEIGHT: bpy.props.IntProperty(name="Rail Height", default=2, min=1, max=50)
+    #RAIL_VERTICALSTRUTS: bpy.props.IntProperty(name="Rail Vertical Struts", default=5, min=1, max=200)
     RAIL_FILLSTRUTS: bpy.props.BoolProperty(name="Fill Vertical Struts", default=False)
-    RAIL_QUANTITY: bpy.props.IntProperty(name="Rail Quantity", default=1, min=0, max=10)
+    #RAIL_QUANTITY: bpy.props.IntProperty(name="Rail Quantity", default=1, min=0, max=10)
     RAIL_MATERIAL: bpy.props.EnumProperty(items = [('Metal','Metal',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Wood','Wood',''), ('Metal 2','Metal2','')],name="Roof Material")
 
     #Window Enum List Propertys (identifier, name, description)
-    WINDOW_LENGTH: bpy.props.IntProperty(name="Window Length", default=2, min=1, max=50)
-    WINDOW_HEIGHT: bpy.props.IntProperty(name="Window Height", default=2, min=1, max=50)
+    WINDOW_LENGTH: bpy.props.IntProperty(name="Window Length (in CM)", default=120, min=10, max=500)
+    WINDOW_HEIGHT: bpy.props.IntProperty(name="Window Height (in CM)", default=120, min=10, max=500)
     #WINDOW_THICKNESS: bpy.props.FloatProperty(name="Window Thickness", default=0.05, min=0.02, max=1) Abhängig von Wand Breite
     WINDOW_BRACING: bpy.props.IntProperty(name="Window Bracing", default=2, min=0, max=3)
     WINDOW_ACCESSORY: bpy.props.IntProperty(name="Window Accessory (0 = none)", default=2, min=0, max=2)
     WINDOW_SILL: bpy.props.BoolProperty(name="Window Sill", default=True)
     WINDOW_QUANTITY: bpy.props.IntProperty(name="Window Quantity", default=1, min=0, max=10)
-    WINDOW_MATERIAL: bpy.props.EnumProperty(items = [('Glas','Glas',''), ('Plaster','Plaster',''), ('Wood','Wood',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Roof Material")
+    WINDOW_MATERIAL: bpy.props.EnumProperty(items = [('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Roof Material")
     WINDOW_SILLMATERIAL: bpy.props.EnumProperty(items = [('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Roof Material")
 
     def execute(self, context):        # execute() is called when running the operator.
         bpy.data.scenes["Scene"].eevee.use_ssr = True
  
-        base = Basis.create_basis(self.BASE_WIDTH, self.BASE_HEIGHT, self.BASE_LENGTH, self.BASE_WALLTHICKNESS)
-        #roof = Roof.generateRoof(self.ROOF_TYPE, self.BASE_LENGTH, self.BASE_WIDTH, self.ROOF_HEIGHT, "Roof", "RoofMesh", self.ROOF_OVERHANG, self.ROOF_OVERHANG_SIZE)
-
-       # window = Windows.create_window(self.WINDOW_HEIGHT, self.WINDOW_LENGTH, )
-
-        # objects = bpy.data.objects
-        # wall = False
-        # scale_x = 0.09
-        # scale_y = 0.09
-        # length = 10
-        # height = 0.9
-        # amount = 7
-        # Handrail.handrail(objects, wall, scale_x, scale_y, length, height, amount)
-
-        # windowheight = random.randint(4, 10)
-        # windowwidth = random.randint(2, 7)
-        # windowdepth = random.uniform(0.2, 0.8)
-
-        # windowsill = random.randint(1, 2)
-        # windowaccessoir = random.randit(1, 3)
-        # windowleaf = random.randint(1,4)
-
-        # Windows.create_window(windowheight, windowwidth, windowdepth, windowsill, windowaccessoir,windowleaf)
-
-        Door.generate_door(self.DOOR_WIDTH, self.DOOR_HEIGHT, Gen.getMaterialFromEnm(self.DOOR_MATERIAL), self.DOOR_THICKNESS, self.DOOR_FRAMEWIDTH, self.BASE_WALLTHICKNESS, self.DOOR_FRAMEHEIGHT, self.DOOR_FRAMEMATERIAL, self.DOOR_KEYHOLEMATERIAL, self.DOOR_DOORKNOBMATERIAL)
-
+        base = Basis.create_basis(self.BASE_WIDTH, self.BASE_HEIGHT, self.BASE_LENGTH, Gen.cm_to_m(self.BASE_WALLTHICKNESS), Gen.getMaterialFromEnm(self.BASE_MATERIAL))
+        roof = Roof.generateRoof(self.ROOF_TYPE, self.BASE_LENGTH, self.BASE_WIDTH, self.ROOF_HEIGHT, "Roof", "RoofMesh", self.ROOF_OVERHANG, self.ROOF_OVERHANG_SIZE, Gen.getMaterialFromEnm(self.ROOF_MATERIAL), self.BASE_HEIGHT)
+        door = Door.generate_door(Gen.cm_to_m(self.DOOR_WIDTH), Gen.cm_to_m(self.DOOR_HEIGHT), Gen.getMaterialFromEnm(self.DOOR_MATERIAL), Gen.cm_to_m(self.DOOR_THICKNESS), Gen.cm_to_m(self.DOOR_FRAMEWIDTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS), Gen.cm_to_m(self.DOOR_FRAMEHEIGHT), Gen.getMaterialFromEnm(self.DOOR_FRAMEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_KEYHOLEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_DOORKNOBMATERIAL))
+        window = Windows.create_window(Gen.cm_to_m(self.WINDOW_HEIGHT), Gen.cm_to_m(self.WINDOW_LENGTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS), self.WINDOW_SILL, self.WINDOW_ACCESSORY, self.WINDOW_BRACING, Gen.getMaterialFromEnm(self.WINDOW_MATERIAL),Gen.getMaterialFromEnm(self.WINDOW_SILLMATERIAL))
 
         return {'FINISHED'}            # Lets Blender know the operator finished successfully.
 

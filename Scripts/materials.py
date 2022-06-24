@@ -291,6 +291,8 @@ class Materials():
         Materials.link_nodes(material, bump_2, 0, bsdf,
                              Materials.bsdf_normal_input)
 
+        return material
+
     def get_material(name):
         for i in len(bpy.data.materials):
             if str(name) == bpy.data.materials[i].name:

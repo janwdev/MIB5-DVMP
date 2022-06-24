@@ -60,7 +60,19 @@ class Windows:
         bm.to_mesh(framemesh)
         bm.free()
         return frameobject
-    
+
+    @staticmethod
+    def __vertical_window(windowheight,windowwidth):
+        height= windowheight
+        width = windowwidth/10
+        return height,width
+
+    @staticmethod
+    def __horizontal_window(windowheight,windowwidth):
+        height= windowheight/10
+        width= windowwidth
+        return height,width 
+
     @staticmethod
     def __create_windowleaf(windowheight,windowwidth,leafdepth,windowleaf):
         leafmesh = bpy.data.meshes.new("WindowFrameMesh")
@@ -291,7 +303,7 @@ class Windows:
         return windowaccessoirobject
 
     @staticmethod
-    def create_window(windowheight, windowwidth, windowdepth, windowsillr, windowaccessoirr,windowleafr):
+    def create_window(windowheight, windowwidth, windowdepth, windowsillr, windowaccessoirr,windowleafr, material, sillmaterial):
         leafdepth = windowdepth/4
         windowframewidth = windowheight/20
         #create object
@@ -300,19 +312,19 @@ class Windows:
         windowframe: bpy.types.object = Windows.__create_window_frame(windowheight,windowwidth,leafdepth,windowframewidth)
         #material
         glass: bpy.types.Material = Materials.create_glass_material()
-        wood:  bpy.types.Material = Materials.create_wood_material()
         # append materials
         basis.data.materials.append(glass)
-        windowframe.data.materials.append(wood)
+        windowframe.data.materials.append(material)
         
         if (windowleafr!= 1):
             windowleaf: bpy.types.object = Windows.__create_windowleaf(windowheight,windowwidth,leafdepth,windowleafr)
-            windowleaf.data.materials.append(wood)
+            windowleaf.data.materials.append(material)
         if (windowsillr==1):
             windowsill: bpy.types.object =Windows.__create_window_sill(windowwidth,leafdepth,windowframewidth)
-            windowsill.data.materials.append(wood)
+            windowsill.data.materials.append(sillmaterial)
         if (windowaccessoirr!=1):
             windowaccessoir: bpy.types.object =Windows.__create_window_accessoir(windowheight,windowwidth,windowframewidth,leafdepth,windowaccessoirr)
-            windowaccessoir.data.materials.append(wood)
+            windowaccessoir.data.materials.append(material)
         #parenting
         Gen.parenting([windowframe, windowleaf, windowsill, windowaccessoir], basis)
+        return basis
