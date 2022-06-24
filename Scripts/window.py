@@ -274,7 +274,7 @@ class Windows:
         bm.from_mesh(windowaccessoirmesh)
         if (accessoir==2):
             #Blackbox / Rolladenbox
-            blackboxdepth = windowheight/20
+            blackboxdepth = windowheight/18
             Windows.__create_vert(bm,-windowwidth - windowframewidth,windowwidth + windowframewidth,-blackboxdepth,windowheight,windowheight+blackboxdepth)
         else:
             # Windowshutter
