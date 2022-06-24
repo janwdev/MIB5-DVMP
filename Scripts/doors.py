@@ -5,6 +5,7 @@ import math
 from . generic import Gen
 from . materials import Materials
 
+
 class Door:
 
     @staticmethod
@@ -55,7 +56,7 @@ class Door:
     @staticmethod
     def __generate_frame(width_door: float, height_door: float, cutout_door: float, width: float, strength: float, height: float):
 
-        cutout_2 = 3 # Was ist das
+        cutout_2 = 3  # Was ist das
 
         mesh_name = "normal_door_frame"
         mesh: bpy.types.Mesh = Gen.prepare_mesh(mesh_name, mesh_name)
@@ -195,10 +196,13 @@ class Door:
         return doorhandle
 
     @staticmethod
-    def generate_door(door_width: float = 120, door_height: float = 210, cutout_frame: float = 2, door_material: bpy.types.Material = None, door_strength: float = 4,
-                      keyhole_space_from_doorside: float = 3, keyhole_radius: float = 2, keyhole_under_hold: float = 10, keyhole_hole_radius: float = 0.5, keyhole_material: bpy.types.Material = None,
-                      handle_space_from_doorside: float = 5, handle_radius: float = 1.5, handle_away_from_door_length: float = 8, handle_length : float = 10, handle_material: bpy.types.Material = None,
+    def generate_door(door_width: float = 120, door_height: float = 210, door_material: bpy.types.Material = None, door_strength: float = 4,
                       frame_width: float = 25, frame_strength: float = 10, frame_height: float = 25, frame_material: bpy.types.Material = None,
+                      keyhole_material: bpy.types.Material = None,
+                      handle_material: bpy.types.Material = None,
+                      cutout_frame: float = 2,
+                      keyhole_space_from_doorside: float = 3, keyhole_radius: float = 2, keyhole_under_hold: float = 10, keyhole_hole_radius: float = 0.5,
+                      handle_space_from_doorside: float = 5, handle_radius: float = 1.5, handle_away_from_door_length: float = 8, handle_length: float = 10,
                       handle_side_right: bool = False, inside: bool = True, double_doors: bool = False, sliding_door: bool = False):
         print("Generate Door")
 
@@ -212,14 +216,16 @@ class Door:
             frame_material = Materials.create_wood_material()
         if keyhole_material == None:
             keyhole_material = Materials.create_metal_material()
-        
+
         normal_door: bpy.types.object = Door.__generate_normal_door(
             door_width, door_height, door_strength, cutout_frame)
 
         keyhole = Door.__generate_keyhole(
             normal_door, door_height, door_width, keyhole_space_from_doorside, keyhole_radius, door_strength+1, keyhole_under_hold, keyhole_hole_radius)
-        door_handle = Door.__generate_doorhandle(door_height, door_width, handle_space_from_doorside, handle_radius, handle_away_from_door_length, handle_length)
-        frame = Door.__generate_frame(door_width, door_height, cutout_frame, frame_width, frame_strength, frame_height)
+        door_handle = Door.__generate_doorhandle(
+            door_height, door_width, handle_space_from_doorside, handle_radius, handle_away_from_door_length, handle_length)
+        frame = Door.__generate_frame(
+            door_width, door_height, cutout_frame, frame_width, frame_strength, frame_height)
         # parenting und Materialien
         normal_door.data.materials.append(door_material)
         frame.data.materials.append(frame_material)
@@ -229,4 +235,3 @@ class Door:
         # parenting
         Gen.parenting([normal_door, frame, keyhole, door_handle], normal_door)
         return normal_door
-        
