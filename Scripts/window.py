@@ -256,7 +256,7 @@ class Windows:
             windowsillobject)  # put object in collection
         bm = bmesh.new()
         bm.from_mesh(windowsillmesh)
-        windowsilllength = random.uniform(1,2)
+        windowsilllength = windowwidth*2
         
         Windows.__create_vert(bm,-windowwidth - windowframewidth,windowwidth + windowframewidth, -windowsilllength,0- windowframewidth,0- windowframewidth-leafdepth )
 
@@ -274,7 +274,7 @@ class Windows:
         bm.from_mesh(windowaccessoirmesh)
         if (accessoir==2):
             #Blackbox / Rolladenbox
-            blackboxdepth = random.uniform(1,1.6)
+            blackboxdepth = windowheight/20
             Windows.__create_vert(bm,-windowwidth - windowframewidth,windowwidth + windowframewidth,-blackboxdepth,windowheight,windowheight+blackboxdepth)
         else:
             # Windowshutter
@@ -303,9 +303,10 @@ class Windows:
         return windowaccessoirobject
 
     @staticmethod
-    def create_window(windowheight, windowwidth, windowdepth, windowsillr, windowaccessoirr,windowleafr, material, sillmaterial):
+    def create_window(windowheight, width, windowdepth, windowsillr, windowaccessoirr,windowleafr, material, sillmaterial):
         leafdepth = windowdepth/4
         windowframewidth = windowheight/20
+        windowwidth = width/2
         #create object
         basis: bpy.types.object = Windows.__create_random_basis(
             windowheight, windowwidth, windowdepth)
