@@ -2,7 +2,7 @@ import bpy
 import bmesh
 import random
 
-from Scripts.materials import Materials
+from . materials import Materials
 
 class Basis:
     
@@ -56,5 +56,3 @@ class Basis:
         basis: bpy.types.object = Basis.create_square(width, height,length,wallthickness)
         plaster: bpy.types.Material = Materials.plaster()
         basis.data.materials.append(plaster)
-               
-Basis.create_basis()

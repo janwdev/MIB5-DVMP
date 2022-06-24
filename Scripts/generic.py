@@ -1,7 +1,7 @@
 from re import X
 import bpy
 
-from Scripts.materials import Materials
+from . materials import Materials
 
 
 class Gen:
