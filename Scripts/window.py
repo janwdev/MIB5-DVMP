@@ -279,24 +279,24 @@ class Windows:
         else:
             # Windowshutter
             #  left
-            Windows.__create_vert(bm,(-windowwidth*2),(-windowwidth-windowframewidth),(-leafdepth*3),0,windowheight)
-            Windows.__create_vert(bm,(-windowwidth*2+windowwidth/4 ),(-windowwidth-windowframewidth-windowwidth/4),(-leafdepth*6),(windowheight - windowheight/10),(windowheight/2 + windowheight/12))
-            Windows.__create_vert(bm,(-windowwidth*2+windowwidth/4 ),(-windowwidth-windowframewidth-windowwidth/4),(-leafdepth*6),(windowheight/10),(windowheight/2 - windowheight/12))
-            Windows.__create_vert(bm,(-windowwidth*2),(-windowwidth*2+windowwidth/7),(-leafdepth*6),0,windowheight)
-            Windows.__create_vert(bm,(-windowwidth-windowframewidth-windowwidth/7),(-windowwidth-windowframewidth),(-leafdepth*6),0,windowheight)
-            Windows.__create_vert(bm,(-windowwidth*2),(-windowwidth-windowframewidth),(-leafdepth*6),(windowheight/2 + windowheight/20),(windowheight/2 - windowheight/20))
-            Windows.__create_vert(bm,(-windowwidth*2),(-windowwidth-windowframewidth),(-leafdepth*6),(windowheight),(windowheight - windowheight/15))
-            Windows.__create_vert(bm,(-windowwidth*2),(-windowwidth-windowframewidth),(-leafdepth*6),(windowheight/15),0)
+            Windows.__create_vert(bm,(-windowwidth*2),(-windowwidth-windowframewidth),(-leafdepth),0,windowheight)
+            Windows.__create_vert(bm,(-windowwidth*2+windowwidth/4 ),(-windowwidth-windowframewidth-windowwidth/4),(-leafdepth*2),(windowheight - windowheight/10),(windowheight/2 + windowheight/12))
+            Windows.__create_vert(bm,(-windowwidth*2+windowwidth/4 ),(-windowwidth-windowframewidth-windowwidth/4),(-leafdepth*2),(windowheight/10),(windowheight/2 - windowheight/12))
+            Windows.__create_vert(bm,(-windowwidth*2),(-windowwidth*2+windowwidth/7),(-leafdepth*2),0,windowheight)
+            Windows.__create_vert(bm,(-windowwidth-windowframewidth-windowwidth/7),(-windowwidth-windowframewidth),(-leafdepth*2),0,windowheight)
+            Windows.__create_vert(bm,(-windowwidth*2),(-windowwidth-windowframewidth),(-leafdepth*2),(windowheight/2 + windowheight/20),(windowheight/2 - windowheight/20))
+            Windows.__create_vert(bm,(-windowwidth*2),(-windowwidth-windowframewidth),(-leafdepth*2),(windowheight),(windowheight - windowheight/15))
+            Windows.__create_vert(bm,(-windowwidth*2),(-windowwidth-windowframewidth),(-leafdepth*2),(windowheight/15),0)
 
             # right 
-            Windows.__create_vert(bm,(windowwidth+ windowframewidth),(windowwidth*2),(-leafdepth*3),0,windowheight)
-            Windows.__create_vert(bm,(windowwidth+ windowframewidth),(windowwidth+ windowframewidth+ windowwidth/7),(-leafdepth*6),0,windowheight)
-            Windows.__create_vert(bm,(windowwidth*2- windowwidth/7),(windowwidth*2),(-leafdepth*6),0,windowheight)
-            Windows.__create_vert(bm,(windowwidth+ windowframewidth),(windowwidth*2),(-leafdepth*6),(windowheight),(windowheight - windowheight/15))
-            Windows.__create_vert(bm,(windowwidth+ windowframewidth),(windowwidth*2),(-leafdepth*6),(windowheight/15),0)
-            Windows.__create_vert(bm,(windowwidth+ windowframewidth),(windowwidth*2),(-leafdepth*6),(windowheight/2 + windowheight/20),(windowheight/2 - windowheight/20))
-            Windows.__create_vert(bm,(windowwidth+ windowframewidth+windowwidth/4 ),(windowwidth*2-windowwidth/4),(-leafdepth*6),(windowheight - windowheight/10),(windowheight/2 + windowheight/12))
-            Windows.__create_vert(bm,(windowwidth+ windowframewidth+windowwidth/4 ),(windowwidth*2-windowwidth/4),(-leafdepth*6),(windowheight/10),(windowheight/2 - windowheight/12))
+            Windows.__create_vert(bm,(windowwidth+ windowframewidth),(windowwidth*2),(-leafdepth),0,windowheight)
+            Windows.__create_vert(bm,(windowwidth+ windowframewidth),(windowwidth+ windowframewidth+ windowwidth/7),(-leafdepth*2),0,windowheight)
+            Windows.__create_vert(bm,(windowwidth*2- windowwidth/7),(windowwidth*2),(-leafdepth*2),0,windowheight)
+            Windows.__create_vert(bm,(windowwidth+ windowframewidth),(windowwidth*2),(-leafdepth*2),(windowheight),(windowheight - windowheight/15))
+            Windows.__create_vert(bm,(windowwidth+ windowframewidth),(windowwidth*2),(-leafdepth*2),(windowheight/15),0)
+            Windows.__create_vert(bm,(windowwidth+ windowframewidth),(windowwidth*2),(-leafdepth*2),(windowheight/2 + windowheight/20),(windowheight/2 - windowheight/20))
+            Windows.__create_vert(bm,(windowwidth+ windowframewidth+windowwidth/4 ),(windowwidth*2-windowwidth/4),(-leafdepth*2),(windowheight - windowheight/10),(windowheight/2 + windowheight/12))
+            Windows.__create_vert(bm,(windowwidth+ windowframewidth+windowwidth/4 ),(windowwidth*2-windowwidth/4),(-leafdepth*2),(windowheight/10),(windowheight/2 - windowheight/12))
               
         bm.to_mesh(windowaccessoirmesh)
         bm.free()
@@ -329,20 +329,6 @@ class Windows:
             windowaccessoir: bpy.types.object =Windows.__create_window_accessoir(windowheight,windowwidth,windowframewidth,leafdepth,windowaccessoirr)
             windowaccessoir.data.materials.append(material)
             Gen.parenting([ windowaccessoir], basis)
-        #parenting
-
-        # if(windowleafr!=1 and windowsillr ==1 and windowaccessoirr!=1):
-        #     Gen.parenting([windowframe, windowleaf, windowsill, windowaccessoir], basis)
-        # elif(windowleafr!=1 and windowsillr ==1):
-        #     Gen.parenting([windowframe, windowleaf, windowsill], basis)
-        # elif(windowleafr!=1):
-        #     Gen.parenting([windowframe, windowleaf], basis)
-        # elif( windowsillr ==1 and windowaccessoirr!=1): 
-        #     Gen.parenting([windowframe, windowsill, windowaccessoir], basis)
-        # elif( windowsillr ==1): 
-        #     Gen.parenting([windowframe, windowsill], basis)
-        # elif(windowaccessoirr!=1): 
-        #     Gen.parenting([windowframe, windowaccessoir], basis)
 
 
         return basis

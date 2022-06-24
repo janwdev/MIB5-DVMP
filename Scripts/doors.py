@@ -60,7 +60,7 @@ class Door:
 
         cutout_door = cutout_door/100
 
-        cutout_2 = 3 / 100  # Was ist das
+        cutout_2 = cutout_door  # Was ist das
 
         mesh_name = "normal_door_frame"
         mesh: bpy.types.Mesh = Gen.prepare_mesh(mesh_name, mesh_name)
@@ -220,7 +220,6 @@ class Door:
                       keyhole_space_from_doorside: float = 3, keyhole_radius: float = 2, keyhole_under_hold: float = 10, keyhole_hole_radius: float = 0.5,
                       handle_space_from_doorside: float = 5, handle_radius: float = 1.5, handle_away_from_door_length: float = 8, handle_length: float = 10,
                       handle_side_right: bool = False, inside: bool = True, double_doors: bool = False, sliding_door: bool = False):
-        print("Generate Door")
 
         # TODO weitere Parameter programmieren
 
