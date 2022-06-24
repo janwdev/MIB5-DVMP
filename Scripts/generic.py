@@ -1,4 +1,7 @@
+from re import X
 import bpy
+
+from Scripts.materials import Materials
 
 
 class Gen:
@@ -23,6 +26,22 @@ class Gen:
         # the active object will be the parent of all selected object
         bpy.context.view_layer.objects.active = parent
         bpy.ops.object.parent_set(type='OBJECT', keep_transform=False)
+
+    @staticmethod
+    def getMaterialFromEnm(matName):
+        ('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2','')
+        if matName == 'Wood':
+            return Materials.create_wood_material()
+        elif matName == 'Plaster':
+            return Materials.plaster()
+        elif matName == 'Glas':
+            return Materials.create_glass_material()
+        # elif matName == 'Brick':
+        #     return Materials.brick()
+        elif matName == 'Metal':
+            return Materials.create_metal_material()
+        elif matName == 'Metal 2':
+            return Materials.metal()
 
     @staticmethod
     def prepare_mesh(meshname: str, object_name: str):

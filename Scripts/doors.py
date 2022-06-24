@@ -9,10 +9,6 @@ class Door:
 
     @staticmethod
     def __generate_normal_door(width: float, height: float, strength: float, cutout_frame: float):
-        width = width / 100
-        height = height / 100
-        strength = strength / 100
-        cutout_frame = cutout_frame / 100
 
         mesh_name = "normal_door"
         mesh: bpy.types.Mesh = Gen.prepare_mesh(mesh_name, mesh_name)
@@ -59,14 +55,7 @@ class Door:
     @staticmethod
     def __generate_frame(width_door: float, height_door: float, cutout_door: float, width: float, strength: float, height: float):
 
-        width_door = width_door/100
-        height_door = height_door/100
-        cutout_door = cutout_door/100
-        width = width / 100
-        strength = strength / 100
-        height = height / 100
-
-        cutout_2 = 3/100
+        cutout_2 = 3 # Was ist das
 
         mesh_name = "normal_door_frame"
         mesh: bpy.types.Mesh = Gen.prepare_mesh(mesh_name, mesh_name)
@@ -135,14 +124,6 @@ class Door:
         posy = 0
         posz = height_door/2 - under_hold
 
-        posx = posx/100
-        posy = posy/100
-        posz = posz/100
-        radius = radius / 100
-        depth = depth / 100
-        rad_hole = rad_hole / 100
-        under_hold = under_hold / 100
-
         bpy.types.Mesh = bpy.ops.mesh.primitive_cylinder_add(
             radius=radius,
             depth=depth,
@@ -181,13 +162,6 @@ class Door:
         posx = width_door/2-fspace-radius
         posy = 0
         posz = height_door/2
-
-        posx = posx/100
-        posy = posy/100
-        posz = posz/100
-        radius = radius / 100
-        length_x = length_x/100
-        length_y = length_y/100
 
         mesh_name = "door_handle"
         mesh: bpy.types.Mesh = Gen.prepare_mesh(mesh_name, mesh_name)
