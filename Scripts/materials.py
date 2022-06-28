@@ -292,7 +292,37 @@ class Materials():
                              Materials.bsdf_normal_input)
 
         return material
+    @staticmethod
+    def brick():
+        material = bpy.data.materials.new("Brick")
 
+        material.use_nodes = True
+
+        text_coord = Materials.add_tex_coords_node(material)
+        mapping = Materials.add_mapping_node(material)
+        ramp = Materials.add_ramp_node(material)
+        bump = Materials.add_bump_node(material)
+        brick = Materials.add_node(material, "ShaderNodeTexBrick")
+        bsdf = Materials.get_node(material, "Principled BSDF")
+        output = Materials.get_output(material)
+
+        brick.inputs[2].default_value = (0.112523, 0.061518, 0.042729, 1.000000)
+        brick.inputs[8].default_value = 0.1
+        brick.inputs[4].default_value = 2 # eventuell noch anpassen
+        brick.inputs[6].default_value = 1
+
+        ramp = Materials.adjust_ramp_color(ramp, 0, (0.202, 0.078, 0.035, 1))
+        ramp = Materials.adjust_ramp_color(ramp, 1, (0.652, 0.174, 0.117, 1))
+        Materials.link_nodes(material, text_coord, 0, mapping, 0)
+        Materials.link_nodes(material, mapping, 0, brick, 0)
+        Materials.link_nodes(material, ramp, 0, brick, 1)
+        Materials.link_nodes(material, brick, 0, bsdf, 0)
+        Materials.link_nodes(material, brick, 0, bump, 2)
+        Materials.link_nodes(material, bump, 0, bsdf, Materials.bsdf_normal_input)
+
+
+
+        return material
     def get_material(name):
         for i in len(bpy.data.materials):
             if str(name) == bpy.data.materials[i].name:
