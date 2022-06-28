@@ -36,9 +36,9 @@ class Basis:
         bm.from_mesh(basismesh)
 
         # left side
-        Basis.__create_vert(bm,(0-wallthickness),0,0,length,0,height)
+        Basis.__create_vert(bm,0,(0+wallthickness),0,length,0,height)
         #right side
-        Basis.__create_vert(bm,width,(width+wallthickness),0,length,0,height)
+        Basis.__create_vert(bm,(width-wallthickness),width,0,length,0,height)
         # front side
         Basis.__create_vert(bm,0,width,0,wallthickness,0,height)
         # backside
