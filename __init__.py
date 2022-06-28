@@ -11,6 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import math
 import bpy
 import random
 
@@ -57,7 +58,7 @@ class BUILDINGGENERATOR(bpy.types.Operator):
     DOOR_WIDTH: bpy.props.FloatProperty(name="Door Width (in CM)", default=120.0, min=100.0, max=500.0)
     DOOR_HEIGHT: bpy.props.FloatProperty(name="Door Height (in CM)", default=210.0, min=100.0, max=500.0)
     DOOR_THICKNESS: bpy.props.FloatProperty(name="Door Thickness (in CM)", default=3.0, min=3.0, max=50)
-    DOOR_QUANTITY: bpy.props.IntProperty(name="Door Quantity (in CM)", default=1, min=0, max=4)
+    DOOR_QUANTITY: bpy.props.IntProperty(name="Door Quantity", default=1, min=0, max=4)
     DOOR_FRAMEWIDTH: bpy.props.FloatProperty(name="Door Frame Width (in CM)", default=20.0, min=5.0, max=50.0)
     DOOR_FRAMEHEIGHT: bpy.props.FloatProperty(name="Door Frame Height (in CM)", default=20.0, min=5.0, max=50.0)
     DOOR_MATERIAL: bpy.props.EnumProperty(items = [('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Door Material")
@@ -90,21 +91,39 @@ class BUILDINGGENERATOR(bpy.types.Operator):
         base = Basis.create_basis(self.BASE_WIDTH, self.BASE_HEIGHT, self.BASE_LENGTH, Gen.cm_to_m(self.BASE_WALLTHICKNESS), Gen.getMaterialFromEnm(self.BASE_MATERIAL))
         roof = Roof.generateRoof(self.ROOF_TYPE, self.BASE_LENGTH, self.BASE_WIDTH, self.ROOF_HEIGHT, "Roof", "RoofMesh", self.ROOF_OVERHANG, self.ROOF_OVERHANG_SIZE, Gen.getMaterialFromEnm(self.ROOF_MATERIAL), self.BASE_HEIGHT, Gen.cm_to_m(self.BASE_WALLTHICKNESS))
         
-        for i in range(self.DOOR_QUANTITY):
-            door = Door.generate_door(Gen.cm_to_m(self.DOOR_WIDTH), Gen.cm_to_m(self.DOOR_HEIGHT), Gen.getMaterialFromEnm(self.DOOR_MATERIAL), Gen.cm_to_m(self.DOOR_THICKNESS), Gen.cm_to_m(self.DOOR_FRAMEWIDTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS), Gen.cm_to_m(self.DOOR_FRAMEHEIGHT), Gen.getMaterialFromEnm(self.DOOR_FRAMEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_KEYHOLEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_DOORKNOBMATERIAL))
-            boolean = base.modifiers.new(name=("base_bool_door_"+str(i)), type="BOOLEAN")
-            boolean.object = door
-            boolean.operation = "DIFFERENCE"
-
-        for i in range(self.WINDOW_QUANTITY):
-            window = Windows.create_window(Gen.cm_to_m(self.WINDOW_HEIGHT), Gen.cm_to_m(self.WINDOW_LENGTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS), self.WINDOW_SILL, self.WINDOW_ACCESSORY, self.WINDOW_BRACING, Gen.getMaterialFromEnm(self.WINDOW_MATERIAL),Gen.getMaterialFromEnm(self.WINDOW_SILLMATERIAL))
-            boolean = base.modifiers.new(name=("base_bool_window_"+str(i)), type="BOOLEAN")
-            boolean.object = window
-            boolean.operation = "DIFFERENCE"
+        self.moveObjects(base)
 
         return {'FINISHED'}            # Lets Blender know the operator finished successfully.
 
 
+    def moveObjects(self, base):
+
+        positions = []
+        positions.append((0,0,0))
+        positions.append((10,10,0))
+
+        rotations = []
+        rotations.append((0,0,0))
+        rotations.append((90,0,0))
+
+        for i in range(self.DOOR_QUANTITY):
+                door = Door.generate_door(Gen.cm_to_m(self.DOOR_WIDTH), Gen.cm_to_m(self.DOOR_HEIGHT), Gen.getMaterialFromEnm(self.DOOR_MATERIAL), Gen.cm_to_m(self.DOOR_THICKNESS), Gen.cm_to_m(self.DOOR_FRAMEWIDTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS), Gen.cm_to_m(self.DOOR_FRAMEHEIGHT), Gen.getMaterialFromEnm(self.DOOR_FRAMEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_KEYHOLEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_DOORKNOBMATERIAL))
+                # boolean = base.modifiers.new(name=("base_bool_door_"+str(i)), type="BOOLEAN")
+                # boolean.object = door
+                # boolean.operation = "DIFFERENCE"
+                door.location = positions[i]
+                door.rotation_euler[0] =math.radians(rotations[i][0])
+                door.rotation_euler[1] =math.radians(rotations[i][1])
+                door.rotation_euler[2] =math.radians(rotations[i][2])
+                
+
+        for i in range(self.WINDOW_QUANTITY):
+            window = Windows.create_window(Gen.cm_to_m(self.WINDOW_HEIGHT), Gen.cm_to_m(self.WINDOW_LENGTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS), self.WINDOW_SILL, self.WINDOW_ACCESSORY, self.WINDOW_BRACING, Gen.getMaterialFromEnm(self.WINDOW_MATERIAL),Gen.getMaterialFromEnm(self.WINDOW_SILLMATERIAL))
+            # boolean = base.modifiers.new(name=("base_bool_window_"+str(i)), type="BOOLEAN")
+            # boolean.object = window
+            # boolean.operation = "DIFFERENCE"
+
+        
 
 
 def menu_func(self, context):
