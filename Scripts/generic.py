@@ -36,8 +36,8 @@ class Gen:
             return Materials.plaster()
         elif matName == 'Glas':
             return Materials.create_glass_material()
-        # elif matName == 'Brick':
-        #     return Materials.brick()
+        elif matName == 'Brick':
+            return Materials.brick()
         elif matName == 'Metal':
             return Materials.create_metal_material()
         elif matName == 'Metal 2':
