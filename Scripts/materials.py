@@ -293,8 +293,13 @@ class Materials():
 
         return material
     @staticmethod
-    def brick():
-        material = bpy.data.materials.new("Brick")
+    def brick(for_wall = False):
+        # for_wall / for_roof
+        if(for_wall):
+            name = "Brick_Wall"
+        else:
+            name = "Brick_Roof"
+        material = bpy.data.materials.new(name)
 
         material.use_nodes = True
 
@@ -311,18 +316,26 @@ class Materials():
         brick.inputs[4].default_value = 2 # eventuell noch anpassen
         brick.inputs[6].default_value = 1
 
+        if(for_wall):
+            brick.inputs[3].default_value = (0.376773, 0.376773, 0.376773, 1.000000)
+            brick.inputs[5].default_value = 0.01
+            brick.inputs[9].default_value = 0.170
+
         ramp = Materials.adjust_ramp_color(ramp, 0, (0.202, 0.078, 0.035, 1))
         ramp = Materials.adjust_ramp_color(ramp, 1, (0.652, 0.174, 0.117, 1))
-        Materials.link_nodes(material, text_coord, 0, mapping, 0)
+        Materials.link_nodes(material, text_coord, 2, mapping, 0)
         Materials.link_nodes(material, mapping, 0, brick, 0)
         Materials.link_nodes(material, ramp, 0, brick, 1)
         Materials.link_nodes(material, brick, 0, bsdf, 0)
         Materials.link_nodes(material, brick, 0, bump, 2)
         Materials.link_nodes(material, bump, 0, bsdf, Materials.bsdf_normal_input)
+    def uv_for_brick_wall(object_name):
+        object = bpy.context.scene.objects[object_name]
+        object.select_set(True)
+        bpy.ops.object.editmode_toggle()
+        bpy.ops.uv.cube_project(cube_size=1)
+        bpy.ops.object.editmode_toggle()
 
-
-
-        return material
     def get_material(name):
         for i in len(bpy.data.materials):
             if str(name) == bpy.data.materials[i].name:
