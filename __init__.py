@@ -77,13 +77,14 @@ class BUILDINGGENERATOR(bpy.types.Operator):
 
     #Rail Enum List Propertys (identifier, name, description)
     #RAIL_LENGTH: bpy.props.IntProperty(name="Rail Length", default=10, min=1, max=50)
-    #RAIL_HEIGHT: bpy.props.IntProperty(name="Rail Height", default=2, min=1, max=50)
+    
     #RAIL_VERTICALSTRUTS: bpy.props.IntProperty(name="Rail Vertical Struts", default=5, min=1, max=200)
     EMPTY4_HEADLINE: bpy.props.StringProperty(name="",description="", default="")
     RAIL_HEADLINE: bpy.props.StringProperty(name="RAIL SETTINGS",description="RAIL SETTINGS", default="RAIL SETTINGS")
-   
-    RAIL_FILLSTRUTS: bpy.props.BoolProperty(name="Fill Vertical Struts", default=False)
-    #RAIL_QUANTITY: bpy.props.IntProperty(name="Rail Quantity", default=1, min=0, max=10)
+
+    RAIL_ACTIVE: bpy.props.BoolProperty(name="Enable Rail", default=False)
+    RAIL_HEIGHT: bpy.props.IntProperty(name="Height (CM)", default=120, min=10, max=500)
+    RAIL_DISTANCE: bpy.props.IntProperty(name="Distance (M)", default=5, min=1, max=50)
     RAIL_MATERIAL: bpy.props.EnumProperty(items = [('Metal','Metal',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Wood','Wood',''), ('Metal 2','Metal2','')],name="Rail Material")
 
     #Window Enum List Propertys (identifier, name, description)
@@ -113,22 +114,14 @@ class BUILDINGGENERATOR(bpy.types.Operator):
 
         bpy.context.window_manager.popup_menu(draw ,title = title, icon = icon)
 
-
-    # #Shows a message box with a specific message 
-    # ShowMessageBox("This is a message") 
-
-    # #Shows a message box with a message and custom title
-    # ShowMessageBox("This is a message", "This is a custom title")
-
-    # #Shows a message box with a message, custom title, and a specific icon
-    # ShowMessageBox("This is a message", "This is a custom title", 'ERROR')
-
     def execute(self, context):        # execute() is called when running the operator.
         bpy.data.scenes["Scene"].eevee.use_ssr = True
  
+        # Generate basis and rood
         self.base = Basis.create_basis(self.BASE_WIDTH, self.BASE_FLOORS, self.BASE_LENGTH, Gen.cm_to_m(self.BASE_WALLTHICKNESS-2), Gen.getMaterialFromEnm(self.BASE_MATERIAL))
         roof = Roof.generateRoof(self.ROOF_TYPE, self.BASE_LENGTH, self.BASE_WIDTH,Gen.cm_to_m(self.ROOF_HEIGHT), "Roof", "RoofMesh", self.ROOF_OVERHANG, self.ROOF_OVERHANG_SIZE, Gen.getMaterialFromEnm(self.ROOF_MATERIAL), self.BASE_FLOORS, Gen.cm_to_m(self.BASE_WALLTHICKNESS))
         
+        # set with door for every site of building (if 0, no door is created)
         door_width_1 = 0
         door_width_2 = 0
         door_width_3 = 0
@@ -148,25 +141,52 @@ class BUILDINGGENERATOR(bpy.types.Operator):
             door_width_3 = self.DOOR_WIDTH+self.DOOR_FRAMEWIDTH*2
             door_width_4 = self.DOOR_WIDTH+self.DOOR_FRAMEWIDTH*2
 
+        # create doors and windows for every side of the building
         for i in range(self.BASE_FLOORS):
+            # params: (offsetx, offsety, offsetz) <- startpoint where wall creation beginns,
+            #   window quantity, ...
             self.moveObjects((0,-self.offsetCorrection,i*2.2),0,self.WINDOW_QUANTITY_WALL_F,self.BASE_WIDTH,self.WINDOW_LENGTH,door_width_1)
             self.moveObjects((self.BASE_WIDTH + self.offsetCorrection,0,i*2.2),90,self.WINDOW_QUANTITY_WALL_R,self.BASE_WIDTH,self.WINDOW_LENGTH, door_width_2)
             self.moveObjects((0,self.BASE_LENGTH +self.offsetCorrection,i*2.2),180,self.WINDOW_QUANTITY_WALL_B,self.BASE_WIDTH,self.WINDOW_LENGTH,door_width_3)
             self.moveObjects((-self.offsetCorrection,0,i*2.2),270,self.WINDOW_QUANTITY_WALL_L,self.BASE_WIDTH,self.WINDOW_LENGTH, door_width_4)
 
+        
 
-        for object in bpy.context.scene.objects:
-            Materials.uv_object(object)
+        # generate Handrail around house, if needed
+        if self.RAIL_ACTIVE == True:
+            
+            rail = Handrail.handrail(self.BASE_WIDTH + self.RAIL_DISTANCE*2,Gen.cm_to_m(self.RAIL_HEIGHT),round(self.BASE_WIDTH * 100/12), False, Gen.getMaterialFromEnm(self.RAIL_MATERIAL))
+            rail.location = (self.BASE_WIDTH/2, -(self.RAIL_DISTANCE - 0.1),Gen.cm_to_m(self.RAIL_HEIGHT))
+
+            rail = Handrail.handrail(self.BASE_WIDTH + self.RAIL_DISTANCE*2,Gen.cm_to_m(self.RAIL_HEIGHT),round(self.BASE_WIDTH * 100/12), False, Gen.getMaterialFromEnm(self.RAIL_MATERIAL))
+            rail.location = (self.BASE_WIDTH + self.RAIL_DISTANCE, self.BASE_LENGTH/2, Gen.cm_to_m(self.RAIL_HEIGHT))
+            rail.rotation_euler[2] = math.radians(90)
+
+            rail = Handrail.handrail(self.BASE_WIDTH + self.RAIL_DISTANCE*2,Gen.cm_to_m(self.RAIL_HEIGHT),round(self.BASE_WIDTH * 100/12), False, Gen.getMaterialFromEnm(self.RAIL_MATERIAL))
+            rail.location = (self.BASE_WIDTH/2, self.RAIL_DISTANCE + self.BASE_LENGTH - 0.1, Gen.cm_to_m(self.RAIL_HEIGHT))
+
+            rail = Handrail.handrail(self.BASE_WIDTH + self.RAIL_DISTANCE*2,Gen.cm_to_m(self.RAIL_HEIGHT),round(self.BASE_WIDTH * 100/12), False, Gen.getMaterialFromEnm(self.RAIL_MATERIAL))
+            rail.location = (-self.RAIL_DISTANCE,  self.BASE_LENGTH/2, Gen.cm_to_m(self.RAIL_HEIGHT))
+            rail.rotation_euler[2] = math.radians(90)
+
+        # all objects in cube uv mapping for materials
+        for objectp in bpy.context.scene.objects:
+            Materials.uv_object(objectp)
 
         return {'FINISHED'}            # Lets Blender know the operator finished successfully.
 
+    # generate door an needed position with right rotation
     def moveDoor(self, rotation, size_one_window, offset_width, offset_length, window_quant, base_width):
+        # Test if door too high
         if Gen.cm_to_m(self.DOOR_FRAMEHEIGHT + self.DOOR_HEIGHT) >= 2.2:
             print("Tuere insgesamt zu hoch")
+            # Show error
             self.ShowMessageBox("Door height with door frame height too big, max allowed 2.2m", "Door to Big", 'ERROR')
             return -1
 
+        # door normally looks into building, therefore rotate around 180 deg
         rotation = rotation + 180
+        # doorwidth totally is width plus width from doorframe in m
         door_width = self.DOOR_WIDTH+self.DOOR_FRAMEWIDTH*2
         door_width = Gen.cm_to_m(door_width)
         centerpoint = size_one_window/2
@@ -206,38 +226,44 @@ class BUILDINGGENERATOR(bpy.types.Operator):
         boolean.object = door
         boolean.operation = "DIFFERENCE"
     
+    # generate windows an needed position with right rotation, calls also do
     def moveObjects(self, offset, rotation, window_quant, base_width, window_width, door_width):
         if window_quant>0:
             window_width = Gen.cm_to_m(window_width)
             door_width = Gen.cm_to_m(door_width)
-
+            # the space a window can take with padding, depending on base size, door size and window quantity
             size_one_window = (base_width - door_width)/window_quant
             if window_quant == 1 and door_width>0:
+                # if there is one window and a door
                 size_one_window = (base_width - door_width)/ 2
             if offset[2] != 0:
+                # if higher than first floor (ground)
                 size_one_window = base_width/window_quant
             if door_width>0 and offset[2] == 0:
+                # if first floor and door, then generate a door
                 self.moveDoor(rotation, size_one_window, offset[0], offset[1], window_quant, base_width)
             
             if self.WINDOW_ACCESSORY == 3:
+                # if windows have shutter, than you need double space for window
+                # otherwise error return because too many windows for base size
                 if (window_width + Gen.cm_to_m(self.WINDOW_HEIGHT/20)*2 ) + Gen.cm_to_m(2) > size_one_window/2:
                     self.ShowMessageBox("Base Size not big enough", "Base Size too small", 'ERROR')
                     print("Error, return from moveWindow")
                     return -1
 
+            # if too many windows for base width, error and return
             if (window_width + Gen.cm_to_m(self.WINDOW_HEIGHT/20)*2 ) + Gen.cm_to_m(2) > size_one_window:
                 self.ShowMessageBox("Base Size not big enough", "Base Size too small", 'ERROR')
                 print("Error, return from moveWindow")
                 return -1
 
+            # Array with window 
             windows = []
 
             for i in range (window_quant):
                 window = Windows.create_window(Gen.cm_to_m(self.WINDOW_HEIGHT), Gen.cm_to_m(self.WINDOW_LENGTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS) + self.offsetCorrection, self.WINDOW_SILL, self.WINDOW_ACCESSORY, self.WINDOW_BRACING, Gen.getMaterialFromEnm(self.WINDOW_MATERIAL),Gen.getMaterialFromEnm(self.WINDOW_SILLMATERIAL))
                 windows.append(window)
 
-            # offset_width = offset[0]  - Gen.cm_to_m(5)
-            # offset_length = offset[1] - Gen.cm_to_m(5)
             offset_width = offset[0]
             offset_length = offset[1]
             offset_height = offset[2]
@@ -273,6 +299,7 @@ class BUILDINGGENERATOR(bpy.types.Operator):
 
                     centerpoint += size_one_window
         else:
+            # when no window but a door and only in first floor, generate door
             if door_width>0 and offset_height == 0:
                 self.moveDoor(rotation, 0, offset[0], offset[1], window_quant, base_width)
         

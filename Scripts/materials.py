@@ -343,10 +343,11 @@ class Materials():
         Materials.link_nodes(material, brick, 0, bump, 2)
         Materials.link_nodes(material, bump, 0, bsdf, Materials.bsdf_normal_input)
         return material
-        
-    def uv_object(object):
-        object.select_set(True)
+
+    def uv_object(objectp):
+        objectp.select_set(True)
         bpy.ops.object.editmode_toggle()
+        bpy.ops.mesh.select_all(action='SELECT')
         bpy.ops.uv.cube_project(cube_size=1)
         bpy.ops.object.editmode_toggle()
 
