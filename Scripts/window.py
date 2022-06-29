@@ -7,6 +7,7 @@ from . generic import Gen
 
 class Windows:
     @staticmethod
+    # methode to create all verts
     def __create_vert(bm, width, width2, depth, height, height2):
 
         vert1 = bm.verts.new((width, 0, height))
@@ -43,6 +44,7 @@ class Windows:
         bm.free()
         return windowobject
 
+    # creates windowframe
     @staticmethod
     def __create_window_frame(windowheight,windowwidth,leafdepth,windowframewidth):
         framemesh = bpy.data.meshes.new("WindowFrameMesh")
@@ -73,6 +75,7 @@ class Windows:
         width= windowwidth
         return height,width 
 
+    # methode which selects how many leafs the window has
     @staticmethod
     def __create_windowleaf(windowheight,windowwidth,leafdepth,windowleaf):
         leafmesh = bpy.data.meshes.new("WindowFrameMesh")
@@ -95,8 +98,10 @@ class Windows:
         bm.free()
         return leafobject
 
+    # creates one windowseperation = two windowleafs
     @staticmethod
     def __create_two_leaf_window(bm,windowheight,windowwidth,leafdepth,):
+        # selects random how the seperation is created
         format2leaf= random.randint(1,2)
 
         if (format2leaf==1):
@@ -108,9 +113,11 @@ class Windows:
             # horizontal
             leafheight,leafwidth=Windows.__horizontal_window(windowheight,windowwidth) 
             Windows.__create_vert(bm,-leafwidth,leafwidth,-leafdepth,(windowheight/2 + leafheight/2),(windowheight/2 - leafheight/2))
-        
+
+    # creates two windowseperation = three windowleafs    
     @staticmethod
     def __create_three_leaf_window(bm,windowheight,windowwidth,leafdepth):
+        # selects random how the seperation is created
         format3leaf=random.randint(1,6)
 
         if(format3leaf==1):
@@ -160,9 +167,11 @@ class Windows:
             #horizontal right
             leaf2height,leaf2width=Windows.__horizontal_window(windowheight,windowwidth) 
             Windows.__create_vert(bm,leafwidth,windowwidth,-leafdepth,(windowheight/2 + leaf2height/2),(windowheight/2 - leaf2height/2))
-        
+    
+    # creates three windowseperation = four windowleafs    
     @staticmethod
     def __create_four_leaf_window(bm,windowheight,windowwidth,leafdepth):
+        # selects random how the seperation is created
         format4leaf=random.randint(1,9)
 
         if(format4leaf==1):
@@ -248,6 +257,7 @@ class Windows:
             leaf3height,leaf3width=Windows.__vertical_window(windowheight,windowwidth)
             Windows.__create_vert(bm,-leaf3width,leaf3width,-leafdepth,0,(windowheight/3 - leafheight/2))
 
+    # methode to create a window sill
     @staticmethod
     def __create_window_sill(windowwidth,leafdepth,windowframewidth):
         windowsillmesh = bpy.data.meshes.new("WindowSillMesh")
@@ -264,6 +274,7 @@ class Windows:
         bm.free()
         return windowsillobject
 
+    # methode to create a windowaccessoir
     @staticmethod
     def __create_window_accessoir(windowheight,windowwidth,windowframewidth,leafdepth,accessoir):   
         windowaccessoirmesh = bpy.data.meshes.new("WindowAccesoirMesh")
@@ -272,13 +283,14 @@ class Windows:
             windowaccessoirobject)  # put object in collection
         bm = bmesh.new()
         bm.from_mesh(windowaccessoirmesh)
+        
         if (accessoir==2):
-            #Blackbox / Rolladenbox
+            # creates a window Blackbox 
             blackboxdepth = windowheight/18
             Windows.__create_vert(bm,-windowwidth - windowframewidth,windowwidth + windowframewidth,-blackboxdepth,windowheight,windowheight+blackboxdepth)
         else:
-            # Windowshutter
-            #  left
+            # creates  Windowshutter
+            # left side of the windowshutter
             Windows.__create_vert(bm,(-windowwidth*2),(-windowwidth-windowframewidth),(-leafdepth),0,windowheight)
             Windows.__create_vert(bm,(-windowwidth*2+windowwidth/4 ),(-windowwidth-windowframewidth-windowwidth/4),(-leafdepth*2),(windowheight - windowheight/10),(windowheight/2 + windowheight/12))
             Windows.__create_vert(bm,(-windowwidth*2+windowwidth/4 ),(-windowwidth-windowframewidth-windowwidth/4),(-leafdepth*2),(windowheight/10),(windowheight/2 - windowheight/12))
@@ -288,7 +300,7 @@ class Windows:
             Windows.__create_vert(bm,(-windowwidth*2),(-windowwidth-windowframewidth),(-leafdepth*2),(windowheight),(windowheight - windowheight/15))
             Windows.__create_vert(bm,(-windowwidth*2),(-windowwidth-windowframewidth),(-leafdepth*2),(windowheight/15),0)
 
-            # right 
+            # right side of the windowshutter
             Windows.__create_vert(bm,(windowwidth+ windowframewidth),(windowwidth*2),(-leafdepth),0,windowheight)
             Windows.__create_vert(bm,(windowwidth+ windowframewidth),(windowwidth+ windowframewidth+ windowwidth/7),(-leafdepth*2),0,windowheight)
             Windows.__create_vert(bm,(windowwidth*2- windowwidth/7),(windowwidth*2),(-leafdepth*2),0,windowheight)
@@ -302,32 +314,44 @@ class Windows:
         bm.free()
         return windowaccessoirobject
 
+    # methode to create parts a the window with the choosen parameters
     @staticmethod
     def create_window(windowheight, width, windowdepth, windowsillr, windowaccessoirr,windowleafr, material, sillmaterial):
         leafdepth = windowdepth/4
         windowframewidth = windowheight/20
         windowwidth = width/2
-        #create object
+        #create basis for the window / glass
         basis: bpy.types.object = Windows.__create_random_basis(
             windowheight, windowwidth, windowdepth)
+        # creates windowframe
         windowframe: bpy.types.object = Windows.__create_window_frame(windowheight,windowwidth,leafdepth,windowframewidth)
-        #material
+        # not choosesable material for window basis
         glass: bpy.types.Material = Materials.create_glass_material()
         # append materials
         basis.data.materials.append(glass)
         windowframe.data.materials.append(material)
+        # parents the frame to the window basis
         Gen.parenting([windowframe], basis)
+        # if choosen windowleafs will be generated, selection between non and four leafs
         if (windowleafr!= 1):
             windowleaf: bpy.types.object = Windows.__create_windowleaf(windowheight,windowwidth,leafdepth,windowleafr)
+            # append choosen material
             windowleaf.data.materials.append(material)
+            # parents windowleaf to window basis
             Gen.parenting([windowleaf], basis)
+        # if choosen windowsill will be created
         if (windowsillr==1):
             windowsill: bpy.types.object =Windows.__create_window_sill(windowwidth,leafdepth,windowframewidth)
+            # append choosen material
             windowsill.data.materials.append(sillmaterial)
+            # parents windowsill to window basis
             Gen.parenting([ windowsill], basis)
+        # if choosen windowaccesoir is created, selection between non, blackbox and windowshutter
         if (windowaccessoirr!=1):
             windowaccessoir: bpy.types.object =Windows.__create_window_accessoir(windowheight,windowwidth,windowframewidth,leafdepth,windowaccessoirr)
+            # append choosen material
             windowaccessoir.data.materials.append(material)
+            # parents windowaccessoir to window basis
             Gen.parenting([ windowaccessoir], basis)
 
 
