@@ -331,7 +331,7 @@ class Materials():
         Materials.link_nodes(material, brick, 0, bsdf, 0)
         Materials.link_nodes(material, brick, 0, bump, 2)
         Materials.link_nodes(material, bump, 0, bsdf, Materials.bsdf_normal_input)
-    def uv_for_brick_wall(object_name):
+    def uv_object(object_name):
         object = bpy.context.scene.objects[object_name]
         object.select_set(True)
         bpy.ops.object.editmode_toggle()
