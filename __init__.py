@@ -44,7 +44,7 @@ class BUILDINGGENERATOR(bpy.types.Operator):
     
     BASE_WIDTH: bpy.props.IntProperty(name="Width (M)", default=10, min=3, max=100)
     BASE_LENGTH: bpy.props.IntProperty(name="Length (M)", default=10, min=3, max=100)
-    BASE_HEIGHT: bpy.props.IntProperty(name="Floors", default=1, min=1, max=100)
+    BASE_FLOORS: bpy.props.IntProperty(name="Floors", default=1, min=1, max=100)
     BASE_WALLTHICKNESS: bpy.props.IntProperty(name="Wall Thickness (CM)", default=20, min=1, max=500)
     BASE_MATERIAL: bpy.props.EnumProperty(items = [('Plaster','Plaster',''), ('Wood','Wood',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Base Material")
 
@@ -121,8 +121,8 @@ class BUILDINGGENERATOR(bpy.types.Operator):
     def execute(self, context):        # execute() is called when running the operator.
         bpy.data.scenes["Scene"].eevee.use_ssr = True
  
-        base = Basis.create_basis(self.BASE_WIDTH, self.BASE_HEIGHT, self.BASE_LENGTH, Gen.cm_to_m(self.BASE_WALLTHICKNESS), Gen.getMaterialFromEnm(self.BASE_MATERIAL))
-        roof = Roof.generateRoof(self.ROOF_TYPE, self.BASE_LENGTH, self.BASE_WIDTH, self.ROOF_HEIGHT, "Roof", "RoofMesh", self.ROOF_OVERHANG, self.ROOF_OVERHANG_SIZE, Gen.getMaterialFromEnm(self.ROOF_MATERIAL), self.BASE_HEIGHT, Gen.cm_to_m(self.BASE_WALLTHICKNESS))
+        base = Basis.create_basis(self.BASE_WIDTH, self.BASE_FLOORS, self.BASE_LENGTH, Gen.cm_to_m(self.BASE_WALLTHICKNESS), Gen.getMaterialFromEnm(self.BASE_MATERIAL))
+        roof = Roof.generateRoof(self.ROOF_TYPE, self.BASE_LENGTH, self.BASE_WIDTH, self.ROOF_HEIGHT, "Roof", "RoofMesh", self.ROOF_OVERHANG, self.ROOF_OVERHANG_SIZE, Gen.getMaterialFromEnm(self.ROOF_MATERIAL), self.BASE_FLOORS, Gen.cm_to_m(self.BASE_WALLTHICKNESS))
         
         door_width_1 = 0
         door_width_2 = 0
@@ -142,56 +142,15 @@ class BUILDINGGENERATOR(bpy.types.Operator):
             door_width_2 = self.DOOR_WIDTH+self.DOOR_FRAMEWIDTH*2
             door_width_3 = self.DOOR_WIDTH+self.DOOR_FRAMEWIDTH*2
             door_width_4 = self.DOOR_WIDTH+self.DOOR_FRAMEWIDTH*2
-        self.moveObjects(base)
-        self.moveWindow((0,0,0),0,self.WINDOW_QUANTITY_WALL_F,self.BASE_WIDTH,self.WINDOW_LENGTH,door_width_1)
-        self.moveWindow((self.BASE_WIDTH,0,0),90,self.WINDOW_QUANTITY_WALL_R,self.BASE_WIDTH,self.WINDOW_LENGTH, door_width_2)
-        self.moveWindow((0,self.BASE_LENGTH,0),180,self.WINDOW_QUANTITY_WALL_B,self.BASE_WIDTH,self.WINDOW_LENGTH,door_width_3)
-        self.moveWindow((0,0,0),270,self.WINDOW_QUANTITY_WALL_L,self.BASE_WIDTH,self.WINDOW_LENGTH, door_width_4)
+
+        for i in range(self.BASE_FLOORS):
+            self.moveObjects((0,0,i*2.2),0,self.WINDOW_QUANTITY_WALL_F,self.BASE_WIDTH,self.WINDOW_LENGTH,door_width_1)
+            self.moveObjects((self.BASE_WIDTH,0,i*2.2),90,self.WINDOW_QUANTITY_WALL_R,self.BASE_WIDTH,self.WINDOW_LENGTH, door_width_2)
+            self.moveObjects((0,self.BASE_LENGTH,i*2.2),180,self.WINDOW_QUANTITY_WALL_B,self.BASE_WIDTH,self.WINDOW_LENGTH,door_width_3)
+            self.moveObjects((0,0,i*2.2),270,self.WINDOW_QUANTITY_WALL_L,self.BASE_WIDTH,self.WINDOW_LENGTH, door_width_4)
         
 
         return {'FINISHED'}            # Lets Blender know the operator finished successfully.
-
-
-    def moveObjects(self, base):
-
-        positions = []
-        positions.append((0,0,0))
-        positions.append((10,10,0))
-
-        rotations = []
-        rotations.append((0,0,0))
-        rotations.append((0,0,180))
-        doorRot = 180
-        windowRot = 0
-
-        # for i in range(self.DOOR_QUANTITY):
-            
-        #     door = Door.generate_door(Gen.cm_to_m(self.DOOR_WIDTH), Gen.cm_to_m(self.DOOR_HEIGHT), Gen.getMaterialFromEnm(self.DOOR_MATERIAL), Gen.cm_to_m(self.DOOR_THICKNESS), Gen.cm_to_m(self.DOOR_FRAMEWIDTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS), Gen.cm_to_m(self.DOOR_FRAMEHEIGHT), Gen.getMaterialFromEnm(self.DOOR_FRAMEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_KEYHOLEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_DOORKNOBMATERIAL))
-        #     # boolean = base.modifiers.new(name=("base_bool_door_"+str(i)), type="BOOLEAN")
-        #     # boolean.object = door
-        #     # boolean.operation = "DIFFERENCE"
-        #     door.location = positions[i]
-        #     door.rotation_euler[2] =math.radians(doorRot)
-        #     doorRot += 90
-
-
-            # if self.DOOR_QUANTITY == 1:
-            #    door.location = self.BASE_WIDTH/2 +0
-            
-            # elif self.DOOR_QUANTITY == 2:
-            #     self.BASE_WIDTH/2 +0
-            #     self.BASE_WIDTH + self.BASE_LENGTH/2
-            
-            # elif self.DOOR_QUANTITY == 3:
-            #     self.BASE_WIDTH/2 +0
-            #     self.BASE_WIDTH + self.BASE_LENGTH/2
-            #     self.BASE_WIDTH/2 + self.BASE_LENGTH
-            
-            # elif self.DOOR_QUANTITY == 4:
-            #     self.BASE_WIDTH/2 +0
-            #     self.BASE_WIDTH + self.BASE_LENGTH/2
-            #     self.BASE_WIDTH/2 + self.BASE_LENGTH
-            #     0 + self.BASE_LENGTH/2
 
     def moveDoor(self, rotation, size_one_window, offset_width, offset_length, window_quant, base_width):
         door_width = self.DOOR_WIDTH+self.DOOR_FRAMEWIDTH*2
@@ -229,7 +188,7 @@ class BUILDINGGENERATOR(bpy.types.Operator):
                     break
                 centerpoint += size_one_window
     
-    def moveWindow(self, offset, rotation, window_quant, base_width, window_width, door_width=0):
+    def moveObjects(self, offset, rotation, window_quant, base_width, window_width, door_width):
         if window_quant>0:
             window_width = Gen.cm_to_m(window_width)
             door_width = Gen.cm_to_m(door_width)
@@ -237,7 +196,7 @@ class BUILDINGGENERATOR(bpy.types.Operator):
             size_one_window = (base_width - door_width)/window_quant
             if window_quant == 1 and door_width>0:
                 size_one_window = (base_width - door_width)/ 2
-            if door_width>0:
+            if door_width>0 and offset[2] == 0:
                 self.moveDoor(rotation, size_one_window, offset[0], offset[1], window_quant, base_width)
             
             if (window_width + Gen.cm_to_m(self.WINDOW_HEIGHT/20)*2 ) + Gen.cm_to_m(2) > size_one_window:
@@ -286,7 +245,7 @@ class BUILDINGGENERATOR(bpy.types.Operator):
 
                     centerpoint += size_one_window
         else:
-            if door_width>0:
+            if door_width>0 and offset_height == 0:
                 self.moveDoor(rotation, 0, offset[0], offset[1], window_quant, base_width)
         
 

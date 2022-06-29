@@ -256,7 +256,7 @@ class Windows:
             windowsillobject)  # put object in collection
         bm = bmesh.new()
         bm.from_mesh(windowsillmesh)
-        windowsilllength = windowwidth/2
+        windowsilllength = windowwidth/3
         
         Windows.__create_vert(bm,-windowwidth - windowframewidth,windowwidth + windowframewidth, -windowsilllength,0- windowframewidth,0- windowframewidth-leafdepth )
 
