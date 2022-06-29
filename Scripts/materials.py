@@ -21,8 +21,8 @@ class Materials():
         # mapping
         mapping: bpy.types.Node = nodes.new(type="ShaderNodeMapping")
 
-        mapping.inputs[3].default_inputs[0] = 38.2
-        mapping.inputs[3].default_inputs[1] = 2.6
+        mapping.inputs[3].default_value[0] = 38.2
+        mapping.inputs[3].default_value[1] = 2.6
         # noise
         nodes.new(type="ShaderNodeValToRGB")
         noise_texture: bpy.types.Node = nodes.new(type="ShaderNodeTexNoise")
