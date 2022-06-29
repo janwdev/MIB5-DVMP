@@ -3,6 +3,8 @@ import bmesh
 
 
 class Roof:
+    #Method for Roof generation and return
+    #differentiate between Roof Type
     @staticmethod
     def generateRoof(type, length, width, height, objectName, meshName, overhang, overhangSize, material, base_height, wall_thickness):
         if type == "TriangleRoof":

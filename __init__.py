@@ -176,7 +176,7 @@ class BUILDINGGENERATOR(bpy.types.Operator):
         return {'FINISHED'}            # Lets Blender know the operator finished successfully.
 
     # generate door an needed position with right rotation
-    def moveDoor(self, rotation, size_one_window, offset_width, offset_length, window_quant, base_width):
+    def moveDoor(self, rotation, size_one_element, offset_width, offset_length, window_quant, base_width):
         # Test if door too high
         if Gen.cm_to_m(self.DOOR_FRAMEHEIGHT + self.DOOR_HEIGHT) >= 2.2:
             print("Tuere insgesamt zu hoch")
@@ -189,42 +189,59 @@ class BUILDINGGENERATOR(bpy.types.Operator):
         # doorwidth totally is width plus width from doorframe in m
         door_width = self.DOOR_WIDTH+self.DOOR_FRAMEWIDTH*2
         door_width = Gen.cm_to_m(door_width)
-        centerpoint = size_one_window/2
+        #centerpoint is available size per element divided by two
+        centerpoint = size_one_element/2
+        #special case if no window is used
         if window_quant == 0:
             if (rotation/90)%2 == 0:
+                #0 and 180 degree rotation (front and back)
                 pos = (offset_width + self.BASE_WIDTH/2, 0 + offset_length, 0)
             else:
+                #90 and 270 degree rotation (left and right)
                 pos = (0+offset_width, self.BASE_LENGTH, 0)
             
+            #generate Door
             door = Door.generate_door(Gen.cm_to_m(self.DOOR_WIDTH), Gen.cm_to_m(self.DOOR_HEIGHT), Gen.getMaterialFromEnm(self.DOOR_MATERIAL), Gen.cm_to_m(self.DOOR_THICKNESS + self.offsetCorrection), Gen.cm_to_m(self.DOOR_FRAMEWIDTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS+10), Gen.cm_to_m(self.DOOR_FRAMEHEIGHT), Gen.getMaterialFromEnm(self.DOOR_FRAMEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_KEYHOLEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_DOORKNOBMATERIAL))
+            #rotate Door
             door.rotation_euler[2] = math.radians(rotation)
+            #change Door location
             door.location = pos
+        #special case for one Window
         elif window_quant == 1:
-            centerpoint = (base_width-size_one_window)/2
+            #centerpoint is Base Width minus available size per element divided by two
+            centerpoint = (base_width-size_one_element)/2
             if (rotation/90)%2 == 0:
+                #0 and 180 degree rotation (front and back)
                 pos = (offset_width + centerpoint, 0 + offset_length, 0)
             else:
+                #90 and 270 degree rotation (left and right)
                 pos = (0+offset_width, centerpoint, 0)
+            #generate Door
             door = Door.generate_door(Gen.cm_to_m(self.DOOR_WIDTH), Gen.cm_to_m(self.DOOR_HEIGHT), Gen.getMaterialFromEnm(self.DOOR_MATERIAL), Gen.cm_to_m(self.DOOR_THICKNESS+self.offsetCorrection), Gen.cm_to_m(self.DOOR_FRAMEWIDTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS+10), Gen.cm_to_m(self.DOOR_FRAMEHEIGHT), Gen.getMaterialFromEnm(self.DOOR_FRAMEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_KEYHOLEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_DOORKNOBMATERIAL))
+            #rotate Door
             door.rotation_euler[2] = math.radians(rotation)
+            #change Door location
             door.location = pos
+        #case for more then one window    
         else:
             for i in range(1, window_quant+1):
+                #move centerpoint for all Windows until you are on the Door Position, then insert Door
                 if i+1 == math.ceil((window_quant+1)/2):
                     if (rotation/90)%2 == 0:
-                        pos = (centerpoint+size_one_window/2+door_width/2 + offset_width, 0 + offset_length, 0)
+                        #0 and 180 degree rotation (front and back)
+                        pos = (centerpoint+size_one_element/2+door_width/2 + offset_width, 0 + offset_length, 0)
                     else:
-                        pos = (0+offset_width, centerpoint+size_one_window/2+door_width/2, 0)
-                    print("Door Pos: ", pos)
+                        #90 and 270 degree rotation (left and right)
+                        pos = (0+offset_width, centerpoint+size_one_element/2+door_width/2, 0)
+                    #Generate Door
                     door = Door.generate_door(Gen.cm_to_m(self.DOOR_WIDTH), Gen.cm_to_m(self.DOOR_HEIGHT), Gen.getMaterialFromEnm(self.DOOR_MATERIAL), Gen.cm_to_m(self.DOOR_THICKNESS+self.offsetCorrection), Gen.cm_to_m(self.DOOR_FRAMEWIDTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS+10), Gen.cm_to_m(self.DOOR_FRAMEHEIGHT), Gen.getMaterialFromEnm(self.DOOR_FRAMEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_KEYHOLEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_DOORKNOBMATERIAL))
+                    #Rotate Door
                     door.rotation_euler[2] = math.radians(rotation)
+                    #Set Door location
                     door.location = pos
                     break
-                centerpoint += size_one_window
-
-        boolean = self.base.modifiers.new(name="door_Bool", type="BOOLEAN")
-        boolean.object = door
-        boolean.operation = "DIFFERENCE"
+                #move centerpoint one step forward
+                centerpoint += size_one_element
     
     # generate windows an needed position with right rotation, calls also do
     def moveObjects(self, offset, rotation, window_quant, base_width, window_width, door_width):
@@ -257,46 +274,62 @@ class BUILDINGGENERATOR(bpy.types.Operator):
                 print("Error, return from moveWindow")
                 return -1
 
-            # Array with window 
+            # Array with windows
             windows = []
-
+            #fill array
             for i in range (window_quant):
                 window = Windows.create_window(Gen.cm_to_m(self.WINDOW_HEIGHT), Gen.cm_to_m(self.WINDOW_LENGTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS) + self.offsetCorrection, self.WINDOW_SILL, self.WINDOW_ACCESSORY, self.WINDOW_BRACING, Gen.getMaterialFromEnm(self.WINDOW_MATERIAL),Gen.getMaterialFromEnm(self.WINDOW_SILLMATERIAL))
                 windows.append(window)
 
+            # resave offset
             offset_width = offset[0]
             offset_length = offset[1]
             offset_height = offset[2]
 
+            #centerpoint of first window is middle of available window size
             centerpoint = size_one_window/2
 
+            # if door and floor higher than ground and (zero or more than one windows)
             if(door_width>0 and window_quant != 1 and offset_height == 0):
+                # loop over windows and door
                 for i in range(1, window_quant+1):
+                    # calculate position from next window
                     if (rotation/90)%2 == 0:
+                        #0 and 180 degree rotation (front and back)
                         pos = (centerpoint + offset_width, 0 + offset_length, Gen.cm_to_m(110-self.WINDOW_HEIGHT/2)+offset_height)
                     else:
+                        #90 and 270 degree rotation (left and right)
                         pos = (0+offset_width, centerpoint, Gen.cm_to_m(110-self.WINDOW_HEIGHT/2)+offset_height)
-
+                    
+                    # add window at right position with rotation
                     windows[i-1].rotation_euler[2] =math.radians(rotation)
                     windows[i-1].location = pos
                     
+                    # if position from door is next position, skip door and continue with right next window position
                     if i+1 == math.ceil((window_quant+1)/2):
                         centerpoint=centerpoint+size_one_window/2 + door_width + size_one_window/2       
                     else:
+                        # next window position
                         centerpoint += size_one_window
-                    
             else:
+                # if floor at ground and only one window 
+                # or if floor higher than ground
+                # or if no door at wall
                 for i in range(window_quant):
                     if window_quant == 1 and door_width>0:
+                        # if door and only one window, window right beside door
                         centerpoint = size_one_window/2 + (base_width-size_one_window)
 
                     if (rotation/90)%2 == 0:
+                        #0 and 180 degree rotation (front and back)
                         pos = (centerpoint + offset_width, 0 + offset_length, Gen.cm_to_m(110-self.WINDOW_HEIGHT/2)+offset_height)
                     else:
+                        #90 and 270 degree rotation (left and right)
                         pos = (0+offset_width, centerpoint, Gen.cm_to_m(110-self.WINDOW_HEIGHT/2)+offset_height)
+                    # add window at right position with rotation
                     windows[i].rotation_euler[2] =math.radians(rotation)
                     windows[i].location = pos
-
+                    # next window position
                     centerpoint += size_one_window
         else:
             # when no window but a door and only in first floor, generate door
