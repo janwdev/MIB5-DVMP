@@ -101,17 +101,52 @@ class BUILDINGGENERATOR(bpy.types.Operator):
     WINDOW_MATERIAL: bpy.props.EnumProperty(items = [('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Window Material")
     WINDOW_SILLMATERIAL: bpy.props.EnumProperty(items = [('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Window Sill Material")
 
+    def ShowMessageBox(self, message = "", title = "Message Box", icon = 'INFO'):
+
+        def draw(self, context):
+            self.layout.label(text=message)
+
+        bpy.context.window_manager.popup_menu(draw ,title = title, icon = icon)
+
+
+    # #Shows a message box with a specific message 
+    # ShowMessageBox("This is a message") 
+
+    # #Shows a message box with a message and custom title
+    # ShowMessageBox("This is a message", "This is a custom title")
+
+    # #Shows a message box with a message, custom title, and a specific icon
+    # ShowMessageBox("This is a message", "This is a custom title", 'ERROR')
+
     def execute(self, context):        # execute() is called when running the operator.
         bpy.data.scenes["Scene"].eevee.use_ssr = True
  
         base = Basis.create_basis(self.BASE_WIDTH, self.BASE_HEIGHT, self.BASE_LENGTH, Gen.cm_to_m(self.BASE_WALLTHICKNESS), Gen.getMaterialFromEnm(self.BASE_MATERIAL))
         roof = Roof.generateRoof(self.ROOF_TYPE, self.BASE_LENGTH, self.BASE_WIDTH, self.ROOF_HEIGHT, "Roof", "RoofMesh", self.ROOF_OVERHANG, self.ROOF_OVERHANG_SIZE, Gen.getMaterialFromEnm(self.ROOF_MATERIAL), self.BASE_HEIGHT, Gen.cm_to_m(self.BASE_WALLTHICKNESS))
         
+        door_width_1 = 0
+        door_width_2 = 0
+        door_width_3 = 0
+        door_width_4 = 0
+        if self.DOOR_QUANTITY == 1:
+            door_width_1 = self.DOOR_WIDTH+self.DOOR_FRAMEWIDTH*2
+        if self.DOOR_QUANTITY == 2:
+            door_width_1 = self.DOOR_WIDTH+self.DOOR_FRAMEWIDTH*2
+            door_width_2 = self.DOOR_WIDTH+self.DOOR_FRAMEWIDTH*2
+        if self.DOOR_QUANTITY == 3:
+            door_width_1 = self.DOOR_WIDTH+self.DOOR_FRAMEWIDTH*2
+            door_width_2 = self.DOOR_WIDTH+self.DOOR_FRAMEWIDTH*2
+            door_width_3 = self.DOOR_WIDTH+self.DOOR_FRAMEWIDTH*2
+        if self.DOOR_QUANTITY == 4:
+            door_width_1 = self.DOOR_WIDTH+self.DOOR_FRAMEWIDTH*2
+            door_width_2 = self.DOOR_WIDTH+self.DOOR_FRAMEWIDTH*2
+            door_width_3 = self.DOOR_WIDTH+self.DOOR_FRAMEWIDTH*2
+            door_width_4 = self.DOOR_WIDTH+self.DOOR_FRAMEWIDTH*2
         self.moveObjects(base)
-        self.moveWindow((0,0,0),0,self.WINDOW_QUANTITY_WALL_F,self.BASE_WIDTH,self.WINDOW_LENGTH,self.DOOR_WIDTH+self.DOOR_FRAMEWIDTH*2)
-        self.moveWindow((self.BASE_WIDTH,0,0),90,self.WINDOW_QUANTITY_WALL_R,self.BASE_WIDTH,self.WINDOW_LENGTH)
-        self.moveWindow((0,self.BASE_LENGTH,0),180,self.WINDOW_QUANTITY_WALL_B,self.BASE_WIDTH,self.WINDOW_LENGTH)
-        self.moveWindow((0,0,0),270,self.WINDOW_QUANTITY_WALL_L,self.BASE_WIDTH,self.WINDOW_LENGTH)
+        self.moveWindow((0,0,0),0,self.WINDOW_QUANTITY_WALL_F,self.BASE_WIDTH,self.WINDOW_LENGTH,door_width_1)
+        self.moveWindow((self.BASE_WIDTH,0,0),90,self.WINDOW_QUANTITY_WALL_R,self.BASE_WIDTH,self.WINDOW_LENGTH, door_width_2)
+        self.moveWindow((0,self.BASE_LENGTH,0),180,self.WINDOW_QUANTITY_WALL_B,self.BASE_WIDTH,self.WINDOW_LENGTH,door_width_3)
+        self.moveWindow((0,0,0),270,self.WINDOW_QUANTITY_WALL_L,self.BASE_WIDTH,self.WINDOW_LENGTH, door_width_4)
         
 
         return {'FINISHED'}            # Lets Blender know the operator finished successfully.
@@ -129,15 +164,15 @@ class BUILDINGGENERATOR(bpy.types.Operator):
         doorRot = 180
         windowRot = 0
 
-        for i in range(self.DOOR_QUANTITY):
+        # for i in range(self.DOOR_QUANTITY):
             
-            door = Door.generate_door(Gen.cm_to_m(self.DOOR_WIDTH), Gen.cm_to_m(self.DOOR_HEIGHT), Gen.getMaterialFromEnm(self.DOOR_MATERIAL), Gen.cm_to_m(self.DOOR_THICKNESS), Gen.cm_to_m(self.DOOR_FRAMEWIDTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS), Gen.cm_to_m(self.DOOR_FRAMEHEIGHT), Gen.getMaterialFromEnm(self.DOOR_FRAMEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_KEYHOLEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_DOORKNOBMATERIAL))
-            # boolean = base.modifiers.new(name=("base_bool_door_"+str(i)), type="BOOLEAN")
-            # boolean.object = door
-            # boolean.operation = "DIFFERENCE"
-            door.location = positions[i]
-            door.rotation_euler[2] =math.radians(doorRot)
-            doorRot += 90
+        #     door = Door.generate_door(Gen.cm_to_m(self.DOOR_WIDTH), Gen.cm_to_m(self.DOOR_HEIGHT), Gen.getMaterialFromEnm(self.DOOR_MATERIAL), Gen.cm_to_m(self.DOOR_THICKNESS), Gen.cm_to_m(self.DOOR_FRAMEWIDTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS), Gen.cm_to_m(self.DOOR_FRAMEHEIGHT), Gen.getMaterialFromEnm(self.DOOR_FRAMEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_KEYHOLEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_DOORKNOBMATERIAL))
+        #     # boolean = base.modifiers.new(name=("base_bool_door_"+str(i)), type="BOOLEAN")
+        #     # boolean.object = door
+        #     # boolean.operation = "DIFFERENCE"
+        #     door.location = positions[i]
+        #     door.rotation_euler[2] =math.radians(doorRot)
+        #     doorRot += 90
 
 
             # if self.DOOR_QUANTITY == 1:
@@ -158,62 +193,101 @@ class BUILDINGGENERATOR(bpy.types.Operator):
             #     self.BASE_WIDTH/2 + self.BASE_LENGTH
             #     0 + self.BASE_LENGTH/2
 
-    
+    def moveDoor(self, rotation, size_one_window, offset_width, offset_length, window_quant, base_width):
+        door_width = self.DOOR_WIDTH+self.DOOR_FRAMEWIDTH*2
+        door_width = Gen.cm_to_m(door_width)
+        centerpoint = size_one_window/2
+        if window_quant == 0:
+            if (rotation/90)%2 == 0:
+                pos = (offset_width + self.BASE_WIDTH/2, 0 + offset_length, 0)
+            else:
+                pos = (0+offset_width, self.BASE_LENGTH, 0)
+            
+            door = Door.generate_door(Gen.cm_to_m(self.DOOR_WIDTH), Gen.cm_to_m(self.DOOR_HEIGHT), Gen.getMaterialFromEnm(self.DOOR_MATERIAL), Gen.cm_to_m(self.DOOR_THICKNESS), Gen.cm_to_m(self.DOOR_FRAMEWIDTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS), Gen.cm_to_m(self.DOOR_FRAMEHEIGHT), Gen.getMaterialFromEnm(self.DOOR_FRAMEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_KEYHOLEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_DOORKNOBMATERIAL))
+            door.rotation_euler[2] = math.radians(rotation)
+            door.location = pos
+        elif window_quant == 1:
+            centerpoint = (base_width-size_one_window)/2
+            if (rotation/90)%2 == 0:
+                pos = (offset_width + centerpoint, 0 + offset_length, 0)
+            else:
+                pos = (0+offset_width, centerpoint, 0)
+            door = Door.generate_door(Gen.cm_to_m(self.DOOR_WIDTH), Gen.cm_to_m(self.DOOR_HEIGHT), Gen.getMaterialFromEnm(self.DOOR_MATERIAL), Gen.cm_to_m(self.DOOR_THICKNESS), Gen.cm_to_m(self.DOOR_FRAMEWIDTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS), Gen.cm_to_m(self.DOOR_FRAMEHEIGHT), Gen.getMaterialFromEnm(self.DOOR_FRAMEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_KEYHOLEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_DOORKNOBMATERIAL))
+            door.rotation_euler[2] = math.radians(rotation)
+            door.location = pos
+        else:
+            for i in range(1, window_quant+1):
+                if i+1 == math.ceil((window_quant+1)/2):
+                    if (rotation/90)%2 == 0:
+                        pos = (centerpoint+size_one_window/2+door_width/2 + offset_width, 0 + offset_length, 0)
+                    else:
+                        pos = (0+offset_width, centerpoint+size_one_window/2+door_width/2, 0)
+                    print("Door Pos: ", pos)
+                    door = Door.generate_door(Gen.cm_to_m(self.DOOR_WIDTH), Gen.cm_to_m(self.DOOR_HEIGHT), Gen.getMaterialFromEnm(self.DOOR_MATERIAL), Gen.cm_to_m(self.DOOR_THICKNESS), Gen.cm_to_m(self.DOOR_FRAMEWIDTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS), Gen.cm_to_m(self.DOOR_FRAMEHEIGHT), Gen.getMaterialFromEnm(self.DOOR_FRAMEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_KEYHOLEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_DOORKNOBMATERIAL))
+                    door.rotation_euler[2] = math.radians(rotation)
+                    door.location = pos
+                    break
+                centerpoint += size_one_window
     
     def moveWindow(self, offset, rotation, window_quant, base_width, window_width, door_width=0):
+        if window_quant>0:
+            window_width = Gen.cm_to_m(window_width)
+            door_width = Gen.cm_to_m(door_width)
 
-        window_width = Gen.cm_to_m(window_width)
-        door_width = Gen.cm_to_m(door_width)
+            size_one_window = (base_width - door_width)/window_quant
+            if window_quant == 1 and door_width>0:
+                size_one_window = (base_width - door_width)/ 2
+            if door_width>0:
+                self.moveDoor(rotation, size_one_window, offset[0], offset[1], window_quant, base_width)
+            
+            if (window_width + Gen.cm_to_m(self.WINDOW_HEIGHT/20)*2 ) + Gen.cm_to_m(2) > size_one_window:
+                self.ShowMessageBox("Base Size not big enough", "Base Size too small", 'ERROR')
+                print("Error, return from moveWindow")
+                return -1
 
-        size_one_window = (base_width - door_width)/window_quant
-        
-        if (window_width + Gen.cm_to_m(self.WINDOW_HEIGHT/20)*2 ) * window_quant > base_width - (door_width):
-            print("Error, return from moveWindow")
-            return -1
+            windows = []
 
-        windows = []
-        print("moveWindow")
+            for i in range (window_quant):
+                window = Windows.create_window(Gen.cm_to_m(self.WINDOW_HEIGHT), Gen.cm_to_m(self.WINDOW_LENGTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS), self.WINDOW_SILL, self.WINDOW_ACCESSORY, self.WINDOW_BRACING, Gen.getMaterialFromEnm(self.WINDOW_MATERIAL),Gen.getMaterialFromEnm(self.WINDOW_SILLMATERIAL))
+                windows.append(window)
 
-        for i in range (window_quant):
-            window = Windows.create_window(Gen.cm_to_m(self.WINDOW_HEIGHT), Gen.cm_to_m(self.WINDOW_LENGTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS), self.WINDOW_SILL, self.WINDOW_ACCESSORY, self.WINDOW_BRACING, Gen.getMaterialFromEnm(self.WINDOW_MATERIAL),Gen.getMaterialFromEnm(self.WINDOW_SILLMATERIAL))
-            windows.append(window)
-            print("GenerateWindow: " + str(i))
+            offset_width = offset[0]
+            offset_length = offset[1]
+            offset_height = offset[2]
 
-        offset_width = offset[0]
-        offset_length = offset[1]
-        offset_height = offset[2]
+            centerpoint = size_one_window/2
 
-        centerpoint = size_one_window/2
-        if(door_width>0):
-            for i in range(1, window_quant+1):
-                print(centerpoint)
-                
+            if(door_width>0 and window_quant != 1):
+                for i in range(1, window_quant+1):
+                    if (rotation/90)%2 == 0:
+                        pos = (centerpoint + offset_width, 0 + offset_length, Gen.cm_to_m(110-self.WINDOW_HEIGHT/2)+offset_height)
+                    else:
+                        pos = (0+offset_width, centerpoint, Gen.cm_to_m(110-self.WINDOW_HEIGHT/2)+offset_height)
 
-                if (rotation/90)%2 == 0:
-                    pos = (centerpoint + offset_width, 0 + offset_length, Gen.cm_to_m(110-self.WINDOW_HEIGHT/2)+offset_height)
-                else:
-                    pos = (0+offset_width, centerpoint, Gen.cm_to_m(110-self.WINDOW_HEIGHT/2)+offset_height)
+                    windows[i-1].rotation_euler[2] =math.radians(rotation)
+                    windows[i-1].location = pos
+                    
+                    if i+1 == math.ceil((window_quant+1)/2):
+                        centerpoint=centerpoint+size_one_window/2 + door_width + size_one_window/2       
+                    else:
+                        centerpoint += size_one_window
+                    
+            else:
+                for i in range(window_quant):
+                    if window_quant == 1 and door_width>0:
+                        centerpoint = size_one_window/2 + (base_width-size_one_window)
 
-                windows[i-1].rotation_euler[2] =math.radians(rotation)
-                windows[i-1].location = pos
-                
-                if i+1 == math.ceil((window_quant+1)/2):
-                    centerpoint=centerpoint+size_one_window/2 + door_width + size_one_window/2
-                else:
+                    if (rotation/90)%2 == 0:
+                        pos = (centerpoint + offset_width, 0 + offset_length, Gen.cm_to_m(110-self.WINDOW_HEIGHT/2)+offset_height)
+                    else:
+                        pos = (0+offset_width, centerpoint, Gen.cm_to_m(110-self.WINDOW_HEIGHT/2)+offset_height)
+                    windows[i].rotation_euler[2] =math.radians(rotation)
+                    windows[i].location = pos
+
                     centerpoint += size_one_window
-                
         else:
-            for i in range(window_quant):
-                if (rotation/90)%2 == 0:
-                    pos = (centerpoint + offset_width, 0 + offset_length, Gen.cm_to_m(110-self.WINDOW_HEIGHT/2)+offset_height)
-                else:
-                    pos = (0+offset_width, centerpoint, Gen.cm_to_m(110-self.WINDOW_HEIGHT/2)+offset_height)
-                
-
-                windows[i].rotation_euler[2] =math.radians(rotation)
-                windows[i].location = pos
-
-                centerpoint += size_one_window
+            if door_width>0:
+                self.moveDoor(rotation, 0, offset[0], offset[1], window_quant, base_width)
         
 
 
