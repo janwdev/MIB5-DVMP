@@ -30,6 +30,10 @@ class Gen:
     @staticmethod
     def getMaterialFromEnm(matName):
         ('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2','')
+        material = bpy.data.materials[matName]
+        if material:
+            return material
+            
         if matName == 'Wood':
             return Materials.create_wood_material()
         elif matName == 'Plaster':

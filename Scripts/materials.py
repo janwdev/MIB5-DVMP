@@ -21,6 +21,8 @@ class Materials():
         # mapping
         mapping: bpy.types.Node = nodes.new(type="ShaderNodeMapping")
 
+        mapping.inputs[3].default_inputs[0] = 38.2
+        mapping.inputs[3].default_inputs[1] = 2.6
         # noise
         nodes.new(type="ShaderNodeValToRGB")
         noise_texture: bpy.types.Node = nodes.new(type="ShaderNodeTexNoise")
@@ -53,7 +55,7 @@ class Materials():
 
         # textcoord to mapping
         wood_material.node_tree.links.new(
-            mapping.inputs[0], tex_coord.outputs[3])
+            mapping.inputs[0], tex_coord.outputs[2])
         # mapping to noise
         wood_material.node_tree.links.new(
             noise_texture.inputs[0], mapping.outputs[0])
