@@ -13,7 +13,6 @@
 
 import math
 import bpy
-import random
 
 from .Scripts.doors import Door
 from .Scripts.handrail import Handrail
@@ -39,28 +38,36 @@ class BUILDINGGENERATOR(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}  # Enable undo for the operator.
 
     #UI Slider Options TODO
-
     #Base Enum List Propertys (identifier, name, description)
-    BASE_WIDTH: bpy.props.IntProperty(name="Base Width (in M)", default=10, min=3, max=100)
-    BASE_LENGTH: bpy.props.IntProperty(name="Base Length (in M)", default=10, min=3, max=100)
-    BASE_HEIGHT: bpy.props.IntProperty(name="Base Floors", default=1, min=1, max=100)
-    BASE_WALLTHICKNESS: bpy.props.IntProperty(name="Base Wall Thickness (in CM)", default=20, min=1, max=500)
+    EMPTY_HEADLINE: bpy.props.StringProperty(name="",description="", default="")
+    BASE_HEADLINE: bpy.props.StringProperty(name="BASE SETTINGS",description="BASE SETTINGS", default="BASE SETTINGS")
+    
+    BASE_WIDTH: bpy.props.IntProperty(name="Width (M)", default=10, min=3, max=100)
+    BASE_LENGTH: bpy.props.IntProperty(name="Length (M)", default=10, min=3, max=100)
+    BASE_HEIGHT: bpy.props.IntProperty(name="Floors", default=1, min=1, max=100)
+    BASE_WALLTHICKNESS: bpy.props.IntProperty(name="Wall Thickness (CM)", default=20, min=1, max=500)
     BASE_MATERIAL: bpy.props.EnumProperty(items = [('Plaster','Plaster',''), ('Wood','Wood',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Base Material")
 
     #Roof Enum List Propertys (identifier, name, description)
-    ROOF_HEIGHT: bpy.props.IntProperty(name="Roof Height (in M)", default=2, min=2, max=100)
-    ROOF_OVERHANG_SIZE: bpy.props.IntProperty(name="Roof Overhang Size (in CM)", default=1, min=1, max=200)
-    ROOF_OVERHANG: bpy.props.BoolProperty(name="Roof Overhang", default=True) #OVERHNAG is also an length of overhang attribute. Insert here and in function call
+    EMPTY2_HEADLINE: bpy.props.StringProperty(name="",description="", default="")
+    ROOF_HEADLINE: bpy.props.StringProperty(name="ROOF SETTINGS",description="ROOF SETTINGS", default="ROOF SETTINGS")
+    
+    ROOF_HEIGHT: bpy.props.IntProperty(name="Height (M)", default=2, min=2, max=100)
+    ROOF_OVERHANG_SIZE: bpy.props.IntProperty(name="Overhang Size (CM)", default=1, min=1, max=200)
+    ROOF_OVERHANG: bpy.props.BoolProperty(name="Overhang", default=True) #OVERHNAG is also an length of overhang attribute. Insert here and in function call
     ROOF_TYPE: bpy.props.EnumProperty(items = [('TriangleRoof','Triangle Roof',''),('FlatRoof','Flat Roof',''),('PointyTriangleRoof','Pointy Triangle Roof','')],name="Roof Type")
     ROOF_MATERIAL: bpy.props.EnumProperty(items = [('Brick','Brick',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Wood','Wood',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Roof Material")
 
     #Door Enum List Propertys (identifier, name, description)
-    DOOR_WIDTH: bpy.props.FloatProperty(name="Door Width (in CM)", default=120.0, min=100.0, max=500.0)
-    DOOR_HEIGHT: bpy.props.FloatProperty(name="Door Height (in CM)", default=210.0, min=100.0, max=500.0)
-    DOOR_THICKNESS: bpy.props.FloatProperty(name="Door Thickness (in CM)", default=3.0, min=3.0, max=50)
-    DOOR_QUANTITY: bpy.props.IntProperty(name="Door Quantity", default=1, min=0, max=4)
-    DOOR_FRAMEWIDTH: bpy.props.FloatProperty(name="Door Frame Width (in CM)", default=20.0, min=5.0, max=50.0)
-    DOOR_FRAMEHEIGHT: bpy.props.FloatProperty(name="Door Frame Height (in CM)", default=20.0, min=5.0, max=50.0)
+    EMPTY3_HEADLINE: bpy.props.StringProperty(name="",description="", default="")
+    DOOR_HEADLINE: bpy.props.StringProperty(name="DOOR SETTINGS",description="DOOR SETTINGS", default="DOOR SETTINGS")
+    
+    DOOR_WIDTH: bpy.props.FloatProperty(name="Width (CM)", default=120.0, min=100.0, max=500.0)
+    DOOR_HEIGHT: bpy.props.FloatProperty(name="Height (CM)", default=210.0, min=100.0, max=500.0)
+    DOOR_THICKNESS: bpy.props.FloatProperty(name="Thickness (CM)", default=3.0, min=3.0, max=50)
+    DOOR_QUANTITY: bpy.props.IntProperty(name="Quantity", default=1, min=0, max=4)
+    DOOR_FRAMEWIDTH: bpy.props.FloatProperty(name="Frame Width (CM)", default=20.0, min=5.0, max=50.0)
+    DOOR_FRAMEHEIGHT: bpy.props.FloatProperty(name="Frame Height (CM)", default=20.0, min=5.0, max=50.0)
     DOOR_MATERIAL: bpy.props.EnumProperty(items = [('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Door Material")
     DOOR_KEYHOLEMATERIAL: bpy.props.EnumProperty(items = [('Metal','Metal',''), ('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal 2','Metal2','')],name="Keyhole Material")
     DOOR_DOORKNOBMATERIAL: bpy.props.EnumProperty(items = [('Metal','Metal',''), ('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal 2','Metal2','')],name="Doorknob Material")
@@ -70,18 +77,27 @@ class BUILDINGGENERATOR(bpy.types.Operator):
     #RAIL_LENGTH: bpy.props.IntProperty(name="Rail Length", default=10, min=1, max=50)
     #RAIL_HEIGHT: bpy.props.IntProperty(name="Rail Height", default=2, min=1, max=50)
     #RAIL_VERTICALSTRUTS: bpy.props.IntProperty(name="Rail Vertical Struts", default=5, min=1, max=200)
+    EMPTY4_HEADLINE: bpy.props.StringProperty(name="",description="", default="")
+    RAIL_HEADLINE: bpy.props.StringProperty(name="RAIL SETTINGS",description="RAIL SETTINGS", default="RAIL SETTINGS")
+   
     RAIL_FILLSTRUTS: bpy.props.BoolProperty(name="Fill Vertical Struts", default=False)
     #RAIL_QUANTITY: bpy.props.IntProperty(name="Rail Quantity", default=1, min=0, max=10)
-    RAIL_MATERIAL: bpy.props.EnumProperty(items = [('Metal','Metal',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Wood','Wood',''), ('Metal 2','Metal2','')],name="Roof Material")
+    RAIL_MATERIAL: bpy.props.EnumProperty(items = [('Metal','Metal',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Wood','Wood',''), ('Metal 2','Metal2','')],name="Rail Material")
 
     #Window Enum List Propertys (identifier, name, description)
-    WINDOW_LENGTH: bpy.props.IntProperty(name="Window Length (in CM)", default=120, min=10, max=500)
-    WINDOW_HEIGHT: bpy.props.IntProperty(name="Window Height (in CM)", default=120, min=10, max=500)
+    EMPTY5_HEADLINE: bpy.props.StringProperty(name="",description="", default="")
+    WINDOW_HEADLINE: bpy.props.StringProperty(name="WINDOW SETTINGS",description="WINDOW SETTINGS", default="WINDOW SETTINGS")
+    
+    WINDOW_LENGTH: bpy.props.IntProperty(name="Length (CM)", default=120, min=10, max=500)
+    WINDOW_HEIGHT: bpy.props.IntProperty(name="Height (CM)", default=120, min=10, max=500)
     #WINDOW_THICKNESS: bpy.props.FloatProperty(name="Window Thickness", default=0.05, min=0.02, max=1) Abhängig von Wand Breite
-    WINDOW_BRACING: bpy.props.IntProperty(name="Window Bracing", default=2, min=1, max=4)
-    WINDOW_ACCESSORY: bpy.props.IntProperty(name="Window Accessory (1 = none)", default=2, min=1, max=3)
-    WINDOW_SILL: bpy.props.BoolProperty(name="Window Sill", default=True)
-    WINDOW_QUANTITY: bpy.props.IntProperty(name="Window Quantity", default=1, min=0, max=10)
+    WINDOW_BRACING: bpy.props.IntProperty(name="Bracing", default=2, min=1, max=4)
+    WINDOW_ACCESSORY: bpy.props.IntProperty(name="Accessory (1 = none)", default=2, min=1, max=3)
+    WINDOW_SILL: bpy.props.BoolProperty(name="Sill", default=True)
+    WINDOW_QUANTITY_WALL_F: bpy.props.IntProperty(name="Quant Front", default=1, min=0, max=100)
+    WINDOW_QUANTITY_WALL_R: bpy.props.IntProperty(name="Quant Right", default=1, min=0, max=100)
+    WINDOW_QUANTITY_WALL_L: bpy.props.IntProperty(name="Quant Left", default=1, min=0, max=100)
+    WINDOW_QUANTITY_WALL_B: bpy.props.IntProperty(name="Quant Back", default=1, min=0, max=100)
     WINDOW_MATERIAL: bpy.props.EnumProperty(items = [('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Window Material")
     WINDOW_SILLMATERIAL: bpy.props.EnumProperty(items = [('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Window Sill Material")
 
@@ -92,6 +108,11 @@ class BUILDINGGENERATOR(bpy.types.Operator):
         roof = Roof.generateRoof(self.ROOF_TYPE, self.BASE_LENGTH, self.BASE_WIDTH, self.ROOF_HEIGHT, "Roof", "RoofMesh", self.ROOF_OVERHANG, self.ROOF_OVERHANG_SIZE, Gen.getMaterialFromEnm(self.ROOF_MATERIAL), self.BASE_HEIGHT, Gen.cm_to_m(self.BASE_WALLTHICKNESS))
         
         self.moveObjects(base)
+        self.moveWindow((0,0,0),0,self.WINDOW_QUANTITY_WALL_F,self.BASE_WIDTH,self.WINDOW_LENGTH,self.DOOR_WIDTH+self.DOOR_FRAMEWIDTH*2)
+        self.moveWindow((self.BASE_WIDTH,0,0),90,self.WINDOW_QUANTITY_WALL_R,self.BASE_WIDTH,self.WINDOW_LENGTH)
+        self.moveWindow((0,self.BASE_LENGTH,0),180,self.WINDOW_QUANTITY_WALL_B,self.BASE_WIDTH,self.WINDOW_LENGTH)
+        self.moveWindow((0,0,0),270,self.WINDOW_QUANTITY_WALL_L,self.BASE_WIDTH,self.WINDOW_LENGTH)
+        
 
         return {'FINISHED'}            # Lets Blender know the operator finished successfully.
 
@@ -104,25 +125,95 @@ class BUILDINGGENERATOR(bpy.types.Operator):
 
         rotations = []
         rotations.append((0,0,0))
-        rotations.append((90,0,0))
+        rotations.append((0,0,180))
+        doorRot = 180
+        windowRot = 0
 
         for i in range(self.DOOR_QUANTITY):
-                door = Door.generate_door(Gen.cm_to_m(self.DOOR_WIDTH), Gen.cm_to_m(self.DOOR_HEIGHT), Gen.getMaterialFromEnm(self.DOOR_MATERIAL), Gen.cm_to_m(self.DOOR_THICKNESS), Gen.cm_to_m(self.DOOR_FRAMEWIDTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS), Gen.cm_to_m(self.DOOR_FRAMEHEIGHT), Gen.getMaterialFromEnm(self.DOOR_FRAMEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_KEYHOLEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_DOORKNOBMATERIAL))
-                # boolean = base.modifiers.new(name=("base_bool_door_"+str(i)), type="BOOLEAN")
-                # boolean.object = door
-                # boolean.operation = "DIFFERENCE"
-                door.location = positions[i]
-                door.rotation_euler[0] =math.radians(rotations[i][0])
-                door.rotation_euler[1] =math.radians(rotations[i][1])
-                door.rotation_euler[2] =math.radians(rotations[i][2])
+            
+            door = Door.generate_door(Gen.cm_to_m(self.DOOR_WIDTH), Gen.cm_to_m(self.DOOR_HEIGHT), Gen.getMaterialFromEnm(self.DOOR_MATERIAL), Gen.cm_to_m(self.DOOR_THICKNESS), Gen.cm_to_m(self.DOOR_FRAMEWIDTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS), Gen.cm_to_m(self.DOOR_FRAMEHEIGHT), Gen.getMaterialFromEnm(self.DOOR_FRAMEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_KEYHOLEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_DOORKNOBMATERIAL))
+            # boolean = base.modifiers.new(name=("base_bool_door_"+str(i)), type="BOOLEAN")
+            # boolean.object = door
+            # boolean.operation = "DIFFERENCE"
+            door.location = positions[i]
+            door.rotation_euler[2] =math.radians(doorRot)
+            doorRot += 90
+
+
+            # if self.DOOR_QUANTITY == 1:
+            #    door.location = self.BASE_WIDTH/2 +0
+            
+            # elif self.DOOR_QUANTITY == 2:
+            #     self.BASE_WIDTH/2 +0
+            #     self.BASE_WIDTH + self.BASE_LENGTH/2
+            
+            # elif self.DOOR_QUANTITY == 3:
+            #     self.BASE_WIDTH/2 +0
+            #     self.BASE_WIDTH + self.BASE_LENGTH/2
+            #     self.BASE_WIDTH/2 + self.BASE_LENGTH
+            
+            # elif self.DOOR_QUANTITY == 4:
+            #     self.BASE_WIDTH/2 +0
+            #     self.BASE_WIDTH + self.BASE_LENGTH/2
+            #     self.BASE_WIDTH/2 + self.BASE_LENGTH
+            #     0 + self.BASE_LENGTH/2
+
+    
+    
+    def moveWindow(self, offset, rotation, window_quant, base_width, window_width, door_width=0):
+
+        window_width = Gen.cm_to_m(window_width)
+        door_width = Gen.cm_to_m(door_width)
+
+        size_one_window = (base_width - door_width)/window_quant
+        
+        if (window_width + Gen.cm_to_m(self.WINDOW_HEIGHT/20)*2 ) * window_quant > base_width - (door_width):
+            print("Error, return from moveWindow")
+            return -1
+
+        windows = []
+        print("moveWindow")
+
+        for i in range (window_quant):
+            window = Windows.create_window(Gen.cm_to_m(self.WINDOW_HEIGHT), Gen.cm_to_m(self.WINDOW_LENGTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS), self.WINDOW_SILL, self.WINDOW_ACCESSORY, self.WINDOW_BRACING, Gen.getMaterialFromEnm(self.WINDOW_MATERIAL),Gen.getMaterialFromEnm(self.WINDOW_SILLMATERIAL))
+            windows.append(window)
+            print("GenerateWindow: " + str(i))
+
+        offset_width = offset[0]
+        offset_length = offset[1]
+        offset_height = offset[2]
+
+        centerpoint = size_one_window/2
+        if(door_width>0):
+            for i in range(1, window_quant+1):
+                print(centerpoint)
                 
 
-        for i in range(self.WINDOW_QUANTITY):
-            window = Windows.create_window(Gen.cm_to_m(self.WINDOW_HEIGHT), Gen.cm_to_m(self.WINDOW_LENGTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS), self.WINDOW_SILL, self.WINDOW_ACCESSORY, self.WINDOW_BRACING, Gen.getMaterialFromEnm(self.WINDOW_MATERIAL),Gen.getMaterialFromEnm(self.WINDOW_SILLMATERIAL))
-            # boolean = base.modifiers.new(name=("base_bool_window_"+str(i)), type="BOOLEAN")
-            # boolean.object = window
-            # boolean.operation = "DIFFERENCE"
+                if (rotation/90)%2 == 0:
+                    pos = (centerpoint + offset_width, 0 + offset_length, Gen.cm_to_m(110-self.WINDOW_HEIGHT/2)+offset_height)
+                else:
+                    pos = (0+offset_width, centerpoint, Gen.cm_to_m(110-self.WINDOW_HEIGHT/2)+offset_height)
 
+                windows[i-1].rotation_euler[2] =math.radians(rotation)
+                windows[i-1].location = pos
+                
+                if i+1 == math.ceil((window_quant+1)/2):
+                    centerpoint=centerpoint+size_one_window/2 + door_width + size_one_window/2
+                else:
+                    centerpoint += size_one_window
+                
+        else:
+            for i in range(window_quant):
+                if (rotation/90)%2 == 0:
+                    pos = (centerpoint + offset_width, 0 + offset_length, Gen.cm_to_m(110-self.WINDOW_HEIGHT/2)+offset_height)
+                else:
+                    pos = (0+offset_width, centerpoint, Gen.cm_to_m(110-self.WINDOW_HEIGHT/2)+offset_height)
+                
+
+                windows[i].rotation_euler[2] =math.radians(rotation)
+                windows[i].location = pos
+
+                centerpoint += size_one_window
         
 
 
