@@ -52,7 +52,7 @@ class BUILDINGGENERATOR(bpy.types.Operator):
     EMPTY2_HEADLINE: bpy.props.StringProperty(name="",description="", default="")
     ROOF_HEADLINE: bpy.props.StringProperty(name="ROOF SETTINGS",description="ROOF SETTINGS", default="ROOF SETTINGS")
     
-    ROOF_HEIGHT: bpy.props.IntProperty(name="Height (M)", default=2, min=2, max=100)
+    ROOF_HEIGHT: bpy.props.IntProperty(name="Height (CM)", default=50, min=1, max=500)
     ROOF_OVERHANG_SIZE: bpy.props.IntProperty(name="Overhang Size (CM)", default=1, min=1, max=200)
     ROOF_OVERHANG: bpy.props.BoolProperty(name="Overhang", default=True) #OVERHNAG is also an length of overhang attribute. Insert here and in function call
     ROOF_TYPE: bpy.props.EnumProperty(items = [('TriangleRoof','Triangle Roof',''),('FlatRoof','Flat Roof',''),('PointyTriangleRoof','Pointy Triangle Roof','')],name="Roof Type")
@@ -63,11 +63,11 @@ class BUILDINGGENERATOR(bpy.types.Operator):
     DOOR_HEADLINE: bpy.props.StringProperty(name="DOOR SETTINGS",description="DOOR SETTINGS", default="DOOR SETTINGS")
     
     DOOR_WIDTH: bpy.props.FloatProperty(name="Width (CM)", default=120.0, min=100.0, max=500.0)
-    DOOR_HEIGHT: bpy.props.FloatProperty(name="Height (CM)", default=210.0, min=100.0, max=500.0)
+    DOOR_HEIGHT: bpy.props.FloatProperty(name="Height (CM)", default=190.0, min=100.0, max=215.0)
     DOOR_THICKNESS: bpy.props.FloatProperty(name="Thickness (CM)", default=3.0, min=3.0, max=50)
     DOOR_QUANTITY: bpy.props.IntProperty(name="Quantity", default=1, min=0, max=4)
     DOOR_FRAMEWIDTH: bpy.props.FloatProperty(name="Frame Width (CM)", default=20.0, min=5.0, max=50.0)
-    DOOR_FRAMEHEIGHT: bpy.props.FloatProperty(name="Frame Height (CM)", default=20.0, min=5.0, max=50.0)
+    DOOR_FRAMEHEIGHT: bpy.props.FloatProperty(name="Frame Height (CM)", default=20.0, min=5.0, max=100.0)
     DOOR_MATERIAL: bpy.props.EnumProperty(items = [('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Door Material")
     DOOR_KEYHOLEMATERIAL: bpy.props.EnumProperty(items = [('Metal','Metal',''), ('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal 2','Metal2','')],name="Keyhole Material")
     DOOR_DOORKNOBMATERIAL: bpy.props.EnumProperty(items = [('Metal','Metal',''), ('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal 2','Metal2','')],name="Doorknob Material")
@@ -122,7 +122,7 @@ class BUILDINGGENERATOR(bpy.types.Operator):
         bpy.data.scenes["Scene"].eevee.use_ssr = True
  
         base = Basis.create_basis(self.BASE_WIDTH, self.BASE_FLOORS, self.BASE_LENGTH, Gen.cm_to_m(self.BASE_WALLTHICKNESS), Gen.getMaterialFromEnm(self.BASE_MATERIAL))
-        roof = Roof.generateRoof(self.ROOF_TYPE, self.BASE_LENGTH, self.BASE_WIDTH, self.ROOF_HEIGHT, "Roof", "RoofMesh", self.ROOF_OVERHANG, self.ROOF_OVERHANG_SIZE, Gen.getMaterialFromEnm(self.ROOF_MATERIAL), self.BASE_FLOORS, Gen.cm_to_m(self.BASE_WALLTHICKNESS))
+        roof = Roof.generateRoof(self.ROOF_TYPE, self.BASE_LENGTH, self.BASE_WIDTH,Gen.cm_to_m(self.ROOF_HEIGHT), "Roof", "RoofMesh", self.ROOF_OVERHANG, self.ROOF_OVERHANG_SIZE, Gen.getMaterialFromEnm(self.ROOF_MATERIAL), self.BASE_FLOORS, Gen.cm_to_m(self.BASE_WALLTHICKNESS))
         
         door_width_1 = 0
         door_width_2 = 0
@@ -153,6 +153,10 @@ class BUILDINGGENERATOR(bpy.types.Operator):
         return {'FINISHED'}            # Lets Blender know the operator finished successfully.
 
     def moveDoor(self, rotation, size_one_window, offset_width, offset_length, window_quant, base_width):
+        if Gen.cm_to_m(self.DOOR_FRAMEHEIGHT + self.DOOR_HEIGHT) >= 2.2:
+            print("Tuere insgesamt zu hoch")
+            self.ShowMessageBox("Door height with door frame height too big, max allowed 2.2m", "Door to Big", 'ERROR')
+            return -1
         door_width = self.DOOR_WIDTH+self.DOOR_FRAMEWIDTH*2
         door_width = Gen.cm_to_m(door_width)
         centerpoint = size_one_window/2
@@ -196,6 +200,8 @@ class BUILDINGGENERATOR(bpy.types.Operator):
             size_one_window = (base_width - door_width)/window_quant
             if window_quant == 1 and door_width>0:
                 size_one_window = (base_width - door_width)/ 2
+            if offset[2] != 0:
+                size_one_window = base_width/window_quant
             if door_width>0 and offset[2] == 0:
                 self.moveDoor(rotation, size_one_window, offset[0], offset[1], window_quant, base_width)
             
@@ -216,7 +222,7 @@ class BUILDINGGENERATOR(bpy.types.Operator):
 
             centerpoint = size_one_window/2
 
-            if(door_width>0 and window_quant != 1):
+            if(door_width>0 and window_quant != 1 and offset_height == 0):
                 for i in range(1, window_quant+1):
                     if (rotation/90)%2 == 0:
                         pos = (centerpoint + offset_width, 0 + offset_length, Gen.cm_to_m(110-self.WINDOW_HEIGHT/2)+offset_height)
