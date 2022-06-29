@@ -13,12 +13,15 @@ class Roof:
             roof = Roof.createFlatRoof(length, width, height, objectName, meshName, overhang, overhangSize, base_height, wall_thickness)
         if type == "PointyTriangleRoof":
             roof = Roof.createPointyTriangleRoof(length, width, height, objectName, meshName, overhang, overhangSize, base_height, wall_thickness)
+        #append given Material
         roof.data.materials.append(material)
+        #return finished Roof
         return roof
 
     @staticmethod
     def createTriangleRoof(length, width, height, objectName, meshName, overhang, overhangSize, base_height, wall_thickness):
 
+        #base height multipled with floor height
         base_height = base_height *2.2
 
         mesh = bpy.data.meshes.new(meshName)  # add a new mesh
@@ -36,7 +39,7 @@ class Roof:
         mesh = bpy.context.object.data
         bm = bmesh.new()
 
-        # verts
+        # define verts
         verts = [(width/2, length, height + base_height), (width + wall_thickness, length, base_height), (width/2, 0, height + base_height), (width + wall_thickness, 0, base_height), (width/2, length, height + base_height), (0 - wall_thickness, length, base_height), (width/2, 0, height + base_height), (0 - wall_thickness, 0, base_height)]
 
         # overhang
@@ -81,6 +84,7 @@ class Roof:
     @staticmethod
     def createPointyTriangleRoof(length, width, height, objectName, meshName, overhang, overhangSize, base_height, wall_thickness):
 
+        #base height multipled with floor height
         base_height = base_height *2.2
 
         mesh = bpy.data.meshes.new(meshName)  # add a new mesh
@@ -98,11 +102,12 @@ class Roof:
         mesh = bpy.context.object.data
         bm = bmesh.new()
 
-        # verts
+        # verts without overhang
         if overhang is False:
             verts = [(0 - wall_thickness, 0, base_height), (width/2, length/2, height + base_height), (0 - wall_thickness, length, base_height), (width/2, length/2, height + base_height),
                      (width + wall_thickness, 0, base_height), (width/2, length/2, height + base_height), (width + wall_thickness, length, base_height), (width/2, length/2, height + base_height)]
 
+        # verts with active overhang
         if overhang is True:
             verts = [(-overhangSize - wall_thickness, -overhangSize, base_height), (width/2, length/2, height + base_height), (-overhangSize - wall_thickness, length + overhangSize, base_height), (width/2, length/2, height + base_height),
                      (overhangSize + width + wall_thickness, -overhangSize, base_height), (width/2, length/2, height + base_height), (overhangSize + width + wall_thickness, overhangSize + length, base_height), (width/2, length/2, height + base_height)]
@@ -128,6 +133,7 @@ class Roof:
     @staticmethod
     def createFlatRoof(length, width, height, objectName, meshName, overhang, overhangSize, base_height, wall_thickness):
 
+        #base height multipled with floor height
         base_height = base_height *2.2
 
         mesh = bpy.data.meshes.new(meshName)  # add a new mesh
@@ -145,11 +151,12 @@ class Roof:
         mesh = bpy.context.object.data
         bm = bmesh.new()
 
-        # verts
+        # verts without overhang
         if overhang is False:
             verts = [(0 - wall_thickness, 0, base_height), (0 - wall_thickness, length, base_height), (width + wall_thickness, length, base_height), (width + wall_thickness, 0, base_height), (0 - wall_thickness, 0,
                                                                                     height + base_height), (0 - wall_thickness, length, height + base_height), (width + wall_thickness, length, height + base_height), (width + wall_thickness, 0, height + base_height)]
 
+        #verts with overhang
         if overhang is True:
             verts = [(-overhangSize - wall_thickness, -overhangSize, base_height), (-overhangSize - wall_thickness, length + overhangSize, base_height), (width + overhangSize + wall_thickness, length + overhangSize, base_height), (width + overhangSize + wall_thickness, -overhangSize, base_height),
                      (-overhangSize - wall_thickness, -overhangSize, height + base_height), (-overhangSize - wall_thickness, length + overhangSize, height + base_height), (width + overhangSize + wall_thickness, length + overhangSize, height + base_height), (width + overhangSize + wall_thickness, -overhangSize, height + base_height)]
@@ -169,4 +176,5 @@ class Roof:
         # make the bmesh the object's mesh
         bm.to_mesh(mesh)
         bm.free()  # always do this when finished
+        #return finished object
         return obj
