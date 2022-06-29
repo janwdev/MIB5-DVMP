@@ -21,6 +21,8 @@ from .Scripts.generic import Gen
 from .Scripts.window import Windows
 from .Scripts.basis import Basis
 
+from .Scripts.materials import Materials
+
 bl_info = {
     "name" : "Building Generator",
     "description" : "Creates a Building with random attributes.",
@@ -148,7 +150,10 @@ class BUILDINGGENERATOR(bpy.types.Operator):
             self.moveObjects((self.BASE_WIDTH,0,i*2.2),90,self.WINDOW_QUANTITY_WALL_R,self.BASE_WIDTH,self.WINDOW_LENGTH, door_width_2)
             self.moveObjects((0,self.BASE_LENGTH,i*2.2),180,self.WINDOW_QUANTITY_WALL_B,self.BASE_WIDTH,self.WINDOW_LENGTH,door_width_3)
             self.moveObjects((0,0,i*2.2),270,self.WINDOW_QUANTITY_WALL_L,self.BASE_WIDTH,self.WINDOW_LENGTH, door_width_4)
-        
+
+
+        for object in bpy.context.scene.objects:
+            Materials.uv_object(object)
 
         return {'FINISHED'}            # Lets Blender know the operator finished successfully.
 
@@ -157,6 +162,8 @@ class BUILDINGGENERATOR(bpy.types.Operator):
             print("Tuere insgesamt zu hoch")
             self.ShowMessageBox("Door height with door frame height too big, max allowed 2.2m", "Door to Big", 'ERROR')
             return -1
+
+        rotation = rotation + 180
         door_width = self.DOOR_WIDTH+self.DOOR_FRAMEWIDTH*2
         door_width = Gen.cm_to_m(door_width)
         centerpoint = size_one_window/2
@@ -166,7 +173,7 @@ class BUILDINGGENERATOR(bpy.types.Operator):
             else:
                 pos = (0+offset_width, self.BASE_LENGTH, 0)
             
-            door = Door.generate_door(Gen.cm_to_m(self.DOOR_WIDTH), Gen.cm_to_m(self.DOOR_HEIGHT), Gen.getMaterialFromEnm(self.DOOR_MATERIAL), Gen.cm_to_m(self.DOOR_THICKNESS), Gen.cm_to_m(self.DOOR_FRAMEWIDTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS), Gen.cm_to_m(self.DOOR_FRAMEHEIGHT), Gen.getMaterialFromEnm(self.DOOR_FRAMEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_KEYHOLEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_DOORKNOBMATERIAL))
+            door = Door.generate_door(Gen.cm_to_m(self.DOOR_WIDTH), Gen.cm_to_m(self.DOOR_HEIGHT), Gen.getMaterialFromEnm(self.DOOR_MATERIAL), Gen.cm_to_m(self.DOOR_THICKNESS), Gen.cm_to_m(self.DOOR_FRAMEWIDTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS+1), Gen.cm_to_m(self.DOOR_FRAMEHEIGHT), Gen.getMaterialFromEnm(self.DOOR_FRAMEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_KEYHOLEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_DOORKNOBMATERIAL))
             door.rotation_euler[2] = math.radians(rotation)
             door.location = pos
         elif window_quant == 1:
@@ -175,7 +182,7 @@ class BUILDINGGENERATOR(bpy.types.Operator):
                 pos = (offset_width + centerpoint, 0 + offset_length, 0)
             else:
                 pos = (0+offset_width, centerpoint, 0)
-            door = Door.generate_door(Gen.cm_to_m(self.DOOR_WIDTH), Gen.cm_to_m(self.DOOR_HEIGHT), Gen.getMaterialFromEnm(self.DOOR_MATERIAL), Gen.cm_to_m(self.DOOR_THICKNESS), Gen.cm_to_m(self.DOOR_FRAMEWIDTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS), Gen.cm_to_m(self.DOOR_FRAMEHEIGHT), Gen.getMaterialFromEnm(self.DOOR_FRAMEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_KEYHOLEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_DOORKNOBMATERIAL))
+            door = Door.generate_door(Gen.cm_to_m(self.DOOR_WIDTH), Gen.cm_to_m(self.DOOR_HEIGHT), Gen.getMaterialFromEnm(self.DOOR_MATERIAL), Gen.cm_to_m(self.DOOR_THICKNESS), Gen.cm_to_m(self.DOOR_FRAMEWIDTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS+1), Gen.cm_to_m(self.DOOR_FRAMEHEIGHT), Gen.getMaterialFromEnm(self.DOOR_FRAMEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_KEYHOLEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_DOORKNOBMATERIAL))
             door.rotation_euler[2] = math.radians(rotation)
             door.location = pos
         else:
@@ -186,7 +193,7 @@ class BUILDINGGENERATOR(bpy.types.Operator):
                     else:
                         pos = (0+offset_width, centerpoint+size_one_window/2+door_width/2, 0)
                     print("Door Pos: ", pos)
-                    door = Door.generate_door(Gen.cm_to_m(self.DOOR_WIDTH), Gen.cm_to_m(self.DOOR_HEIGHT), Gen.getMaterialFromEnm(self.DOOR_MATERIAL), Gen.cm_to_m(self.DOOR_THICKNESS), Gen.cm_to_m(self.DOOR_FRAMEWIDTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS), Gen.cm_to_m(self.DOOR_FRAMEHEIGHT), Gen.getMaterialFromEnm(self.DOOR_FRAMEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_KEYHOLEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_DOORKNOBMATERIAL))
+                    door = Door.generate_door(Gen.cm_to_m(self.DOOR_WIDTH), Gen.cm_to_m(self.DOOR_HEIGHT), Gen.getMaterialFromEnm(self.DOOR_MATERIAL), Gen.cm_to_m(self.DOOR_THICKNESS), Gen.cm_to_m(self.DOOR_FRAMEWIDTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS+1), Gen.cm_to_m(self.DOOR_FRAMEHEIGHT), Gen.getMaterialFromEnm(self.DOOR_FRAMEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_KEYHOLEMATERIAL), Gen.getMaterialFromEnm(self.DOOR_DOORKNOBMATERIAL))
                     door.rotation_euler[2] = math.radians(rotation)
                     door.location = pos
                     break
@@ -213,9 +220,11 @@ class BUILDINGGENERATOR(bpy.types.Operator):
             windows = []
 
             for i in range (window_quant):
-                window = Windows.create_window(Gen.cm_to_m(self.WINDOW_HEIGHT), Gen.cm_to_m(self.WINDOW_LENGTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS), self.WINDOW_SILL, self.WINDOW_ACCESSORY, self.WINDOW_BRACING, Gen.getMaterialFromEnm(self.WINDOW_MATERIAL),Gen.getMaterialFromEnm(self.WINDOW_SILLMATERIAL))
+                window = Windows.create_window(Gen.cm_to_m(self.WINDOW_HEIGHT), Gen.cm_to_m(self.WINDOW_LENGTH), Gen.cm_to_m(self.BASE_WALLTHICKNESS+1), self.WINDOW_SILL, self.WINDOW_ACCESSORY, self.WINDOW_BRACING, Gen.getMaterialFromEnm(self.WINDOW_MATERIAL),Gen.getMaterialFromEnm(self.WINDOW_SILLMATERIAL))
                 windows.append(window)
 
+            # offset_width = offset[0]  - Gen.cm_to_m(5)
+            # offset_length = offset[1] - Gen.cm_to_m(5)
             offset_width = offset[0]
             offset_length = offset[1]
             offset_height = offset[2]
@@ -266,6 +275,7 @@ def register():
     from .Scripts.generic import Gen
     from .Scripts.window import Windows
     from .Scripts.basis import Basis
+    from .Scripts.materials import Materials
     print("starting")
     bpy.utils.register_class(BUILDINGGENERATOR)
     bpy.types.VIEW3D_MT_object.append(menu_func)  # Adds the new operator to an existing menu.
