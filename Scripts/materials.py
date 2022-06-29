@@ -317,18 +317,21 @@ class Materials():
         brick.inputs[8].default_value = 0.1
         brick.inputs[4].default_value = 2 # eventuell noch anpassen
         brick.inputs[6].default_value = 1
-
+        brick.inputs[5].default_value = 0.01
+        brick.inputs[4].default_value = 3.2
+        brick.inputs[9].default_value = 0.170
+        
         mapping.inputs[3].default_value[0] = 0.6
         if(for_wall):
+            # wall
             brick.inputs[3].default_value = (0.376773, 0.376773, 0.376773, 1.000000)
-            brick.inputs[4].default_value = 3.2
-            brick.inputs[5].default_value = 0.01
             
             
             
             mapping.inputs[3].default_value[1] = 3.4
         else:
-            brick.inputs[9].default_value = 0.170
+            # roof
+           
             mapping.inputs[3].default_value[1] = 1.8
 
         ramp = Materials.adjust_ramp_color(ramp, 0, (0.202, 0.078, 0.035, 1))
