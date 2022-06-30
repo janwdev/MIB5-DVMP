@@ -40,19 +40,19 @@ class Roof:
         bm = bmesh.new()
 
         # define verts
-        verts = [(width/2, length, height + base_height), (width + wall_thickness, length, base_height), (width/2, 0, height + base_height), (width + wall_thickness, 0, base_height), (width/2, length, height + base_height), (0 - wall_thickness, length, base_height), (width/2, 0, height + base_height), (0 - wall_thickness, 0, base_height)]
+        verts = [(width/2, length, height + base_height), (width, length, base_height), (width/2, 0, height + base_height), (width, 0, base_height), (width/2, length, height + base_height), (0, length, base_height), (width/2, 0, height + base_height), (0, 0, base_height)]
 
-        # overhang
+        # overhang_Size
         if overhang is True:
             # duplicate verts for overhang width, length, height
-            overhang_verts = [(0 - wall_thickness, 0 - overhang, base_height), (width + wall_thickness, 0 - overhang, base_height), (width/2, 0 - overhang, height + base_height),
-                              (0 - wall_thickness, length + overhang, base_height), (width + wall_thickness, length + overhang, base_height), (width/2, length + overhang, height + base_height)]
+            overhang_verts = [(0 , 0 - overhangSize, base_height), (width , 0 - overhangSize, base_height), (width/2, 0 - overhangSize, height + base_height),
+                              (0 , length + overhangSize, base_height), (width , length + overhangSize, base_height), (width/2, length + overhangSize, height + base_height)]
             for o in overhang_verts:
                 verts.append(o)  # add all verts from array
 
             # duplicate verts for overhangThickness
-            overhangThickness_verts = [(0 + overhangSize, 0 - overhang, base_height), (width - overhangSize, 0 - overhang, base_height), (width/2, 0 - overhang, height - (overhangSize/2) + base_height), (0 + overhangSize, length + overhang, base_height), (width - overhangSize, length + overhang, base_height), (width/2, length + overhang, height -
-                                                                                                                                                                                                                                                                                       (overhangSize/2) + base_height), (width/2, length + overhang, height - (overhangSize/2) + base_height), (0 + overhangSize, 0, base_height), (width - overhangSize, 0, base_height), (width/2, 0, height - (overhangSize/2) + base_height), (0 + overhangSize, length, base_height), (width - overhangSize, length, base_height), (width/2, length, height - (overhangSize/2) + base_height)]
+            overhangThickness_verts = [(0 +(height/3), 0 - overhangSize, base_height), (width - (height/3), 0 - overhangSize, base_height), (width/2, 0 - overhangSize, height - (height/3) + base_height), (0 + (height/3), length + overhangSize, base_height), (width - (height/3), length + overhangSize, base_height), (width/2, length + overhangSize, height -
+                                                                                                                                                                                                                                                                                       (height/3) + base_height), (width/2, length + overhangSize, height - (height/3) + base_height), (0 + (height/3), 0, base_height), (width - (height/3), 0, base_height), (width/2, 0, height - (height/3) + base_height), (0 + (height/3), length, base_height), (width - (height/3), length, base_height), (width/2, length, height - (height/3) + base_height)]
             for o in overhangThickness_verts:
                 verts.append(o)  # add all verts from array
 
