@@ -49,6 +49,7 @@ class Materials():
         color_ramp_bump.color_ramp.elements[1].position = 0.025
 
         bump: bpy.types.Node = nodes.new(type="ShaderNodeBump")
+        bump.inputs[0].default_value = 0.3
         bump.inputs[1].default_value = 0.01
 
         ### linking nodes ###
