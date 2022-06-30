@@ -56,8 +56,8 @@ class BUILDINGGENERATOR(bpy.types.Operator):
     
     ROOF_HEIGHT: bpy.props.IntProperty(name="Height (CM)", default=50, min=1, max=500)
     ROOF_OVERHANG_SIZE: bpy.props.IntProperty(name="Overhang Size (CM)", default=100, min=1, max=200)
-    ROOF_OVERHANG: bpy.props.BoolProperty(name="Overhang", default=True) #OVERHNAG is also an length of overhang attribute. Insert here and in function call
-    ROOF_TYPE: bpy.props.EnumProperty(items = [('TriangleRoof','Triangle Roof',''),('FlatRoof','Flat Roof',''),('PointyTriangleRoof','Pointy Triangle Roof','')],name="Roof Type")
+    ROOF_OVERHANG: bpy.props.BoolProperty(name="Overhang", default=True)
+    ROOF_TYPE: bpy.props.EnumProperty(items = [('TriangleRoof','Triangle Roof',''),('FlatRoof','Flat Roof',''),('PointyTriangleRoof','Pointy Triangle Roof',''),('Mushroom','Mushroom Roof (Overhang only)','')],name="Roof Type")
     ROOF_MATERIAL: bpy.props.EnumProperty(items = [('Brick','Brick',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Wood','Wood',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Roof Material")
 
     #Door Enum List Propertys (identifier, name, description)
@@ -119,6 +119,10 @@ class BUILDINGGENERATOR(bpy.types.Operator):
  
         # Generate basis and rood
         self.base = Basis.create_basis(self.BASE_WIDTH, self.BASE_FLOORS, self.BASE_LENGTH, Gen.cm_to_m(self.BASE_WALLTHICKNESS-2), Gen.getMaterialFromEnm(self.BASE_MATERIAL))
+        
+        if self.ROOF_TYPE == "Mushroom":
+            print("Mushroom")
+            self.ROOF_OVERHANG = True
         roof = Roof.generateRoof(self.ROOF_TYPE, self.BASE_LENGTH, self.BASE_WIDTH,Gen.cm_to_m(self.ROOF_HEIGHT), "Roof", "RoofMesh", self.ROOF_OVERHANG,Gen.cm_to_m(self.ROOF_OVERHANG_SIZE), Gen.getMaterialFromEnm(self.ROOF_MATERIAL), self.BASE_FLOORS, Gen.cm_to_m(self.BASE_WALLTHICKNESS))
         
         # set with door for every site of building (if 0, no door is created)
