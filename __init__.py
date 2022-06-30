@@ -119,7 +119,7 @@ class BUILDINGGENERATOR(bpy.types.Operator):
  
         # Generate basis and rood
         self.base = Basis.create_basis(self.BASE_WIDTH, self.BASE_FLOORS, self.BASE_LENGTH, Gen.cm_to_m(self.BASE_WALLTHICKNESS-2), Gen.getMaterialFromEnm(self.BASE_MATERIAL))
-        roof = Roof.generateRoof(self.ROOF_TYPE, self.BASE_LENGTH, self.BASE_WIDTH,Gen.cm_to_m(self.ROOF_HEIGHT), "Roof", "RoofMesh", self.ROOF_OVERHANG, self.ROOF_OVERHANG_SIZE, Gen.getMaterialFromEnm(self.ROOF_MATERIAL), self.BASE_FLOORS, Gen.cm_to_m(self.BASE_WALLTHICKNESS))
+        roof = Roof.generateRoof(self.ROOF_TYPE, self.BASE_LENGTH, self.BASE_WIDTH,Gen.cm_to_m(self.ROOF_HEIGHT), "Roof", "RoofMesh", self.ROOF_OVERHANG,Gen.cm_to_m(self.ROOF_OVERHANG_SIZE), Gen.getMaterialFromEnm(self.ROOF_MATERIAL), self.BASE_FLOORS, Gen.cm_to_m(self.BASE_WALLTHICKNESS))
         
         # set with door for every site of building (if 0, no door is created)
         door_width_1 = 0
