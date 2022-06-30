@@ -256,15 +256,15 @@ class Materials():
         mapping = Materials.add_mapping_node(material)
 
         ramp = Materials.add_ramp_node(material)
-        c = 0.223
-        c_darker = 0.116
-        ramp = Materials.adjust_ramp_pos(ramp, 0, 0.187)
-        ramp = Materials.adjust_ramp_color(ramp, 0, (c, c, c, 1))
-        ramp = Materials.adjust_ramp_pos(ramp, 1, 0.773)
-        ramp = Materials.adjust_ramp_color(ramp, 1, (c_darker, c_darker, c_darker, 1))
+        c = (0.282530, 0.282530, 0.282530, 1.000000)
+        c_darker = (0.635863, 0.635863, 0.635863, 1.000000)
+        ramp = Materials.adjust_ramp_pos(ramp, 0, 0)
+        ramp = Materials.adjust_ramp_color(ramp, 0, c_darker)
+        ramp = Materials.adjust_ramp_pos(ramp, 1, 0.870636)
+        ramp = Materials.adjust_ramp_color(ramp, 1, c)
 
         bump = Materials.add_bump_node(material)
-        bump.inputs[0].default_value = 0.5
+        bump.inputs[0].default_value = 0.25
         bump_2 = Materials.add_bump_node(material)
         bump_2.inputs[0].default_value = 0.2
 
