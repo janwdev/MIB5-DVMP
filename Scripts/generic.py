@@ -46,6 +46,8 @@ class Gen:
             return Materials.create_metal_material()
         elif matName == 'Metal 2':
             return Materials.metal()
+        elif matName == 'Mushroom':
+            return Materials.gen_mushroom_material()
 
     @staticmethod
     def prepare_mesh(meshname: str, object_name: str):

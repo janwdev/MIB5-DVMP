@@ -48,7 +48,7 @@ class BUILDINGGENERATOR(bpy.types.Operator):
     BASE_LENGTH: bpy.props.IntProperty(name="Length (M)", default=10, min=3, max=100)
     BASE_FLOORS: bpy.props.IntProperty(name="Floors", default=1, min=1, max=100)
     BASE_WALLTHICKNESS: bpy.props.IntProperty(name="Wall Thickness (CM)", default=20, min=3, max=500)
-    BASE_MATERIAL: bpy.props.EnumProperty(items = [('Plaster','Plaster',''), ('Wood','Wood',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Base Material")
+    BASE_MATERIAL: bpy.props.EnumProperty(items = [('Plaster','Plaster',''), ('Wood','Wood',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2',''), ('Mushroom','Mushroom','')],name="Base Material")
 
     #Roof Enum List Propertys (identifier, name, description)
     EMPTY2_HEADLINE: bpy.props.StringProperty(name="",description="", default="")
@@ -58,7 +58,7 @@ class BUILDINGGENERATOR(bpy.types.Operator):
     ROOF_OVERHANG_SIZE: bpy.props.IntProperty(name="Overhang Size (CM)", default=100, min=1, max=200)
     ROOF_OVERHANG: bpy.props.BoolProperty(name="Overhang", default=True)
     ROOF_TYPE: bpy.props.EnumProperty(items = [('TriangleRoof','Triangle Roof',''),('FlatRoof','Flat Roof',''),('PointyTriangleRoof','Pointy Triangle Roof',''),('Mushroom','Mushroom Roof (Overhang only)','')],name="Roof Type")
-    ROOF_MATERIAL: bpy.props.EnumProperty(items = [('Brick','Brick',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Wood','Wood',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Roof Material")
+    ROOF_MATERIAL: bpy.props.EnumProperty(items = [('Brick','Brick',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Wood','Wood',''), ('Metal','Metal',''), ('Metal 2','Metal2',''), ('Mushroom','Mushroom','')],name="Roof Material")
 
     #Door Enum List Propertys (identifier, name, description)
     EMPTY3_HEADLINE: bpy.props.StringProperty(name="",description="", default="")
@@ -70,10 +70,10 @@ class BUILDINGGENERATOR(bpy.types.Operator):
     DOOR_QUANTITY: bpy.props.IntProperty(name="Quantity", default=1, min=0, max=4)
     DOOR_FRAMEWIDTH: bpy.props.FloatProperty(name="Frame Width (CM)", default=20.0, min=5.0, max=50.0)
     DOOR_FRAMEHEIGHT: bpy.props.FloatProperty(name="Frame Height (CM)", default=20.0, min=5.0, max=100.0)
-    DOOR_MATERIAL: bpy.props.EnumProperty(items = [('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Door Material")
-    DOOR_KEYHOLEMATERIAL: bpy.props.EnumProperty(items = [('Metal','Metal',''), ('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal 2','Metal2','')],name="Keyhole Material")
-    DOOR_DOORKNOBMATERIAL: bpy.props.EnumProperty(items = [('Metal','Metal',''), ('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal 2','Metal2','')],name="Doorknob Material")
-    DOOR_FRAMEMATERIAL: bpy.props.EnumProperty(items = [('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Door Frame Material")
+    DOOR_MATERIAL: bpy.props.EnumProperty(items = [('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2',''), ('Mushroom','Mushroom','')],name="Door Material")
+    DOOR_KEYHOLEMATERIAL: bpy.props.EnumProperty(items = [('Metal','Metal',''), ('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal 2','Metal2',''), ('Mushroom','Mushroom','')],name="Keyhole Material")
+    DOOR_DOORKNOBMATERIAL: bpy.props.EnumProperty(items = [('Metal','Metal',''), ('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal 2','Metal2',''), ('Mushroom','Mushroom','')],name="Doorknob Material")
+    DOOR_FRAMEMATERIAL: bpy.props.EnumProperty(items = [('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2',''), ('Mushroom','Mushroom','')],name="Door Frame Material")
 
     #Rail Enum List Propertys (identifier, name, description)
     #RAIL_LENGTH: bpy.props.IntProperty(name="Rail Length", default=10, min=1, max=50)
@@ -85,7 +85,7 @@ class BUILDINGGENERATOR(bpy.types.Operator):
     RAIL_ACTIVE: bpy.props.BoolProperty(name="Enable Rail", default=False)
     RAIL_HEIGHT: bpy.props.IntProperty(name="Height (CM)", default=120, min=10, max=500)
     RAIL_DISTANCE: bpy.props.IntProperty(name="Distance (M)", default=5, min=1, max=50)
-    RAIL_MATERIAL: bpy.props.EnumProperty(items = [('Metal','Metal',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Wood','Wood',''), ('Metal 2','Metal2','')],name="Rail Material")
+    RAIL_MATERIAL: bpy.props.EnumProperty(items = [('Metal','Metal',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Wood','Wood',''), ('Metal 2','Metal2',''), ('Mushroom','Mushroom','')],name="Rail Material")
 
     #Window Enum List Propertys (identifier, name, description)
     EMPTY5_HEADLINE: bpy.props.StringProperty(name="",description="", default="")
@@ -101,8 +101,8 @@ class BUILDINGGENERATOR(bpy.types.Operator):
     WINDOW_QUANTITY_WALL_R: bpy.props.IntProperty(name="Quant Right", default=1, min=0, max=100)
     WINDOW_QUANTITY_WALL_L: bpy.props.IntProperty(name="Quant Left", default=1, min=0, max=100)
     WINDOW_QUANTITY_WALL_B: bpy.props.IntProperty(name="Quant Back", default=1, min=0, max=100)
-    WINDOW_MATERIAL: bpy.props.EnumProperty(items = [('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Window Material")
-    WINDOW_SILLMATERIAL: bpy.props.EnumProperty(items = [('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Window Sill Material")
+    WINDOW_MATERIAL: bpy.props.EnumProperty(items = [('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2',''), ('Mushroom','Mushroom','')],name="Window Material")
+    WINDOW_SILLMATERIAL: bpy.props.EnumProperty(items = [('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2',''), ('Mushroom','Mushroom','')],name="Window Sill Material")
     base = None
 
     offsetCorrection = Gen.cm_to_m(1)

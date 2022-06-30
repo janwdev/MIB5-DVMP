@@ -7,6 +7,46 @@ class Materials():
     bsdf_normal_input = 22
 
     @staticmethod
+    def gen_mushroom_material():
+        pilz_material = bpy.data.materials.new("pilz")
+        pilz_material.use_nodes = True
+        node_tree = pilz_material.node_tree
+        nodes: typing.List[bpy.types.Nodes] = pilz_material.node_tree.nodes
+
+        bsdf: bpy.types.Node = nodes.get('Principled BSDF')
+
+        tex_coord: bpy.types.Node = nodes.new(type="ShaderNodeTexCoord")
+        mapping: bpy.types.Node = nodes.new(type="ShaderNodeMapping")
+        voronoi_1: bpy.types.Node = nodes.new(type="ShaderNodeTexVoronoi")
+        voronoi_2: bpy.types.Node = nodes.new(type="ShaderNodeTexVoronoi")
+        less_than_1: bpy.types.Node = nodes.new(type="ShaderNodeMath")
+        less_than_1.operation = 'LESS_THAN'
+        less_than_2: bpy.types.Node = nodes.new(type="ShaderNodeMath")
+        less_than_2.operation = 'LESS_THAN'
+
+        mix_rgb: bpy.types.Node = nodes.new(type="ShaderNodeMixRGB")
+        color_ramp: bpy.types.Node = nodes.new(type="ShaderNodeValToRGB")
+
+        voronoi_1.inputs[2].default_value = 5.9
+        voronoi_2.inputs[2].default_value = 4.7
+
+        less_than_1.inputs[1].default_value = 0.34
+        less_than_2.inputs[1].default_value = 0.1
+
+        color_ramp.color_ramp.elements[0].color = [0.483191, 0.014450, 0.015229, 1.000000]
+
+        node_tree.links.new(bsdf.inputs[0],color_ramp.outputs[0])
+        node_tree.links.new(color_ramp.inputs[0],mix_rgb.outputs[0])
+        node_tree.links.new(mix_rgb.inputs[1],less_than_1.outputs[0])
+        node_tree.links.new(mix_rgb.inputs[2],less_than_2.outputs[0])
+        node_tree.links.new(less_than_1.inputs[0],voronoi_1.outputs[0])
+        node_tree.links.new(less_than_2.inputs[0],voronoi_2.outputs[0])
+        node_tree.links.new(voronoi_2.inputs[0],mapping.outputs[0])
+        node_tree.links.new(mapping.inputs[0],tex_coord.outputs[3])
+
+        return pilz_material
+
+    @staticmethod
     def create_wood_material():
         # wood_material
         wood_material = bpy.data.materials.new("Wood")
