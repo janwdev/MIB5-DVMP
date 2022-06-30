@@ -104,13 +104,13 @@ class Roof:
 
         # verts without overhang
         if overhang is False:
-            verts = [(0 - wall_thickness, 0, base_height), (width/2, length/2, height + base_height), (0 - wall_thickness, length, base_height), (width/2, length/2, height + base_height),
-                     (width + wall_thickness, 0, base_height), (width/2, length/2, height + base_height), (width + wall_thickness, length, base_height), (width/2, length/2, height + base_height)]
+            verts = [(0 , 0, base_height), (width/2, length/2, height + base_height), (0 , length, base_height), (width/2, length/2, height + base_height),
+                     (width , 0, base_height), (width/2, length/2, height + base_height), (width , length, base_height), (width/2, length/2, height + base_height)]
 
         # verts with active overhang
         if overhang is True:
-            verts = [(-overhangSize - wall_thickness, -overhangSize, base_height), (width/2, length/2, height + base_height), (-overhangSize - wall_thickness, length + overhangSize, base_height), (width/2, length/2, height + base_height),
-                     (overhangSize + width + wall_thickness, -overhangSize, base_height), (width/2, length/2, height + base_height), (overhangSize + width + wall_thickness, overhangSize + length, base_height), (width/2, length/2, height + base_height)]
+            verts = [(-overhangSize , -overhangSize, base_height), (width/2, length/2, height + base_height), (-overhangSize , length + overhangSize, base_height), (width/2, length/2, height + base_height),
+                     (overhangSize + width , -overhangSize, base_height), (width/2, length/2, height + base_height), (overhangSize + width , overhangSize + length, base_height), (width/2, length/2, height + base_height)]
 
         for v in verts:
             bm.verts.new(v)  # add all verts from array
@@ -153,13 +153,13 @@ class Roof:
 
         # verts without overhang
         if overhang is False:
-            verts = [(0 - wall_thickness, 0, base_height), (0 - wall_thickness, length, base_height), (width + wall_thickness, length, base_height), (width + wall_thickness, 0, base_height), (0 - wall_thickness, 0,
-                                                                                    height + base_height), (0 - wall_thickness, length, height + base_height), (width + wall_thickness, length, height + base_height), (width + wall_thickness, 0, height + base_height)]
+            verts = [(0 , 0, base_height), (0 , length, base_height), (width , length, base_height), (width , 0, base_height), (0 , 0,
+                                                                                    height + base_height), (0 , length, height + base_height), (width , length, height + base_height), (width , 0, height + base_height)]
 
         #verts with overhang
         if overhang is True:
-            verts = [(-overhangSize - wall_thickness, -overhangSize, base_height), (-overhangSize - wall_thickness, length + overhangSize, base_height), (width + overhangSize + wall_thickness, length + overhangSize, base_height), (width + overhangSize + wall_thickness, -overhangSize, base_height),
-                     (-overhangSize - wall_thickness, -overhangSize, height + base_height), (-overhangSize - wall_thickness, length + overhangSize, height + base_height), (width + overhangSize + wall_thickness, length + overhangSize, height + base_height), (width + overhangSize + wall_thickness, -overhangSize, height + base_height)]
+            verts = [(-overhangSize , -overhangSize, base_height), (-overhangSize , length + overhangSize, base_height), (width + overhangSize , length + overhangSize, base_height), (width + overhangSize , -overhangSize, base_height),
+                     (-overhangSize , -overhangSize, height + base_height), (-overhangSize , length + overhangSize, height + base_height), (width + overhangSize , length + overhangSize, height + base_height), (width + overhangSize , -overhangSize, height + base_height)]
 
         for v in verts:
             bm.verts.new(v)  # add all verts from array
