@@ -55,7 +55,7 @@ class BUILDINGGENERATOR(bpy.types.Operator):
     ROOF_HEADLINE: bpy.props.StringProperty(name="ROOF SETTINGS",description="ROOF SETTINGS", default="ROOF SETTINGS")
     
     ROOF_HEIGHT: bpy.props.IntProperty(name="Height (CM)", default=50, min=1, max=500)
-    ROOF_OVERHANG_SIZE: bpy.props.IntProperty(name="Overhang Size (CM)", default=1, min=1, max=200)
+    ROOF_OVERHANG_SIZE: bpy.props.IntProperty(name="Overhang Size (CM)", default=100, min=1, max=200)
     ROOF_OVERHANG: bpy.props.BoolProperty(name="Overhang", default=True) #OVERHNAG is also an length of overhang attribute. Insert here and in function call
     ROOF_TYPE: bpy.props.EnumProperty(items = [('TriangleRoof','Triangle Roof',''),('FlatRoof','Flat Roof',''),('PointyTriangleRoof','Pointy Triangle Roof','')],name="Roof Type")
     ROOF_MATERIAL: bpy.props.EnumProperty(items = [('Brick','Brick',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Wood','Wood',''), ('Metal','Metal',''), ('Metal 2','Metal2','')],name="Roof Material")

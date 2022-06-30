@@ -1,5 +1,6 @@
 import bpy
 import bmesh
+from mathutils import Vector
 
 
 class Roof:
@@ -9,6 +10,24 @@ class Roof:
     def generateRoof(type, length, width, height, objectName, meshName, overhang, overhangSize, material, base_height, wall_thickness):
         if type == "TriangleRoof":
             roof = Roof.createTriangleRoof(length, width, height, objectName, meshName, overhang, overhangSize, base_height, wall_thickness)
+            if overhang is False:
+                #modify center of half Roof for Material reasons
+                # store the location of current 3d cursor
+                saved_location = bpy.context.scene.cursor.location  # returns a vector
+                # give 3dcursor new coordinates
+                bpy.context.scene.cursor.location = Vector((width/2,length/2,base_height))
+                # set the origin on the current object to the 3dcursor location
+                bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
+                # set 3dcursor location back to the stored location
+                bpy.context.scene.cursor.location = saved_location
+                
+                #add Mirror modifier to generate whole Roof
+                mod = roof.modifiers.new('MirrorY', 'MIRROR')
+                mod.use_axis[0] = False
+                mod.use_axis[1] = True
+                bpy.ops.object.modifier_apply(modifier='MirrorY')
+
+
         if type == "FlatRoof":
             roof = Roof.createFlatRoof(length, width, height, objectName, meshName, overhang, overhangSize, base_height, wall_thickness)
         if type == "PointyTriangleRoof":
@@ -41,7 +60,7 @@ class Roof:
 
         if overhang is False:
             # define verts without overhang
-            verts = [(width/2, length, height + base_height), (width, length, base_height), (width/2, 0, height + base_height), (width, 0, base_height), (width/2, length, height + base_height), (0, length, base_height), (width/2, 0, height + base_height), (0, 0, base_height)]
+            verts = [(width/2, length, height + base_height), (width, length, base_height), (width/2, +length/2, height + base_height), (width, +length/2, base_height), (width/2, length, height + base_height), (0, length, base_height), (width/2, +length/2, height + base_height), (0, +length/2, base_height)]
 
         # overhang_Size
         if overhang is True:
