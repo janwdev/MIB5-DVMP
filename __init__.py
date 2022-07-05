@@ -150,9 +150,9 @@ class BUILDINGGENERATOR(bpy.types.Operator):
             # params: (offsetx, offsety, offsetz) <- startpoint where wall creation beginns,
             #   window quantity, ...
             self.moveObjects((0,-self.offsetCorrection,i*2.2),0,self.WINDOW_QUANTITY_WALL_F,self.BASE_WIDTH,self.WINDOW_LENGTH,door_width_1)
-            self.moveObjects((self.BASE_WIDTH + self.offsetCorrection,0,i*2.2),90,self.WINDOW_QUANTITY_WALL_R,self.BASE_WIDTH,self.WINDOW_LENGTH, door_width_2)
+            self.moveObjects((self.BASE_WIDTH + self.offsetCorrection,0,i*2.2),90,self.WINDOW_QUANTITY_WALL_R,self.BASE_LENGTH,self.WINDOW_LENGTH, door_width_2)
             self.moveObjects((0,self.BASE_LENGTH +self.offsetCorrection,i*2.2),180,self.WINDOW_QUANTITY_WALL_B,self.BASE_WIDTH,self.WINDOW_LENGTH,door_width_3)
-            self.moveObjects((-self.offsetCorrection,0,i*2.2),270,self.WINDOW_QUANTITY_WALL_L,self.BASE_WIDTH,self.WINDOW_LENGTH, door_width_4)
+            self.moveObjects((-self.offsetCorrection,0,i*2.2),270,self.WINDOW_QUANTITY_WALL_L,self.BASE_LENGTH,self.WINDOW_LENGTH, door_width_4)
 
         
 
@@ -337,7 +337,7 @@ class BUILDINGGENERATOR(bpy.types.Operator):
                     centerpoint += size_one_window
         else:
             # when no window but a door and only in first floor, generate door
-            if door_width>0 and offset_height == 0:
+            if door_width>0 and offset[2] == 0:
                 self.moveDoor(rotation, 0, offset[0], offset[1], window_quant, base_width)
         
 

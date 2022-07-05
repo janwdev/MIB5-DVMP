@@ -30,24 +30,25 @@ class Gen:
     @staticmethod
     def getMaterialFromEnm(matName):
         #('Wood','Wood',''), ('Plaster','Plaster',''), ('Glas','Glas',''), ('Brick','Brick',''), ('Metal','Metal',''), ('Metal 2','Metal2','')
-        # material = bpy.data.materials[matName]
-        # if material:
-        #     return material
-            
-        if matName == 'Wood':
-            return Materials.create_wood_material()
-        elif matName == 'Plaster':
-            return Materials.plaster()
-        elif matName == 'Glas':
-            return Materials.create_glass_material()
-        elif matName == 'Brick':
-            return Materials.brick()
-        elif matName == 'Metal':
-            return Materials.create_metal_material()
-        elif matName == 'Metal 2':
-            return Materials.metal()
-        elif matName == 'Mushroom':
-            return Materials.gen_mushroom_material()
+        try:
+            material = bpy.data.materials[matName]
+            if material:
+                return material
+        except:
+            if matName == 'Wood':
+                return Materials.create_wood_material()
+            elif matName == 'Plaster':
+                return Materials.plaster()
+            elif matName == 'Glas':
+                return Materials.create_glass_material()
+            elif matName == 'Brick':
+                return Materials.brick()
+            elif matName == 'Metal':
+                return Materials.create_metal_material()
+            elif matName == 'Metal 2':
+                return Materials.metal()
+            elif matName == 'Mushroom':
+                return Materials.gen_mushroom_material()
 
     @staticmethod
     def prepare_mesh(meshname: str, object_name: str):

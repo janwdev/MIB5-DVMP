@@ -1,6 +1,7 @@
 import bpy
 
 from . materials import Materials
+from .generic import Gen
 
 class Handrail:
 
@@ -13,13 +14,15 @@ class Handrail:
     #     return metal_material
 
     @staticmethod
-    def handrail(objects, wall, scale_x, scale_y, length, height, amount, main_material = "", wall_material = ""):
+    def handrail(length, height, amount, wall, main_material="", wall_material="", scale_x=0.02, scale_y=0.1):
         ##########  MATERIALS ##########
 
         if wall_material == "":
-            wall_material =  Materials.create_glass_material()
+            wall_material = Gen.getMaterialFromEnm("Glas")
+           
         if main_material == "":
-            main_material =  Materials.create_metal_material()
+            main_material = Gen.getMaterialFromEnm("Metal 2")
+           
 
 
         ##########  MESH ##########
@@ -48,7 +51,7 @@ class Handrail:
         bpy.ops.mesh.primitive_cube_add(location=(scale_x,0,height), scale=(scale_x, scale_y, height))
         bpy.context.active_object.name = stab_name
         bpy.ops.object.modifier_add(type='ARRAY')
-        stab = objects[stab_name]
+        stab = bpy.context.scene.objects[stab_name]
         stab.modifiers['Array'].count = amount
         stab.modifiers['Array'].use_relative_offset = False
         stab.modifiers['Array'].use_constant_offset = True
@@ -84,7 +87,7 @@ class Handrail:
         bpy.ops.mesh.primitive_cube_add(location=(
             length/2, 0, (height*2) + scale_x), scale=(length/2, scale_y, scale_x))
         bpy.context.active_object.name = stab_oben_name
-        stab_oben = objects[stab_oben_name]
+        stab_oben = bpy.context.scene.objects[stab_oben_name]
 
         # smoothing
         if(bevel):
@@ -132,6 +135,9 @@ class Handrail:
                 wallMesh.data.materials.append(wall_material)
                 wallMesh.active_material = wall_material
                 wallMesh.active_material.use_screen_refraction = True
+
+        return stab_oben
+
     @staticmethod
     def handrail_for_window(objects, window_width, window_height):
         Handrail.handrail(objects, False, 0.01, 0.07, window_width, window_height*0.4, round(window_width*100/8))

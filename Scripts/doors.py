@@ -218,10 +218,7 @@ class Door:
                       handle_material: bpy.types.Material = None,
                       cutout_frame: float = 2,
                       keyhole_space_from_doorside: float = 3, keyhole_radius: float = 2, keyhole_under_hold: float = 10, keyhole_hole_radius: float = 0.5,
-                      handle_space_from_doorside: float = 5, handle_radius: float = 1.5, handle_away_from_door_length: float = 8, handle_length: float = 10,
-                      handle_side_right: bool = False, inside: bool = True, double_doors: bool = False, sliding_door: bool = False):
-
-        # TODO weitere Parameter programmieren
+                      handle_space_from_doorside: float = 5, handle_radius: float = 1.5, handle_away_from_door_length: float = 8, handle_length: float = 10):
 
         if door_material == None:
             door_material = Materials.create_wood_material()
