@@ -1,4 +1,4 @@
-# MIB5-DVMP Blender Generator
+# MIB5-DVMP Blender House Generator
 Blender-Addon um ein einfaches Haus Anhand unterschiedlicher Parameter zu generieren
 
 ![Image from Parameters](https://github.com/janwdev/MIB5-DVMP/blob/main/Param1.png "Parameters")
