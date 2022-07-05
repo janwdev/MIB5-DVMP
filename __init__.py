@@ -34,12 +34,11 @@ bl_info = {
 }
 
 class BUILDINGGENERATOR(bpy.types.Operator):
-    """My Object Moving Script"""      # Use this as a tooltip for menu items and buttons.
+
     bl_idname = "building.generatordvmp"        # Unique identifier for buttons and menu items to reference.
     bl_label = "Generate Building"         # Display name in the interface.
     bl_options = {'REGISTER', 'UNDO'}  # Enable undo for the operator.
 
-    #UI Slider Options TODO
     #Base Enum List Propertys (identifier, name, description)
     EMPTY_HEADLINE: bpy.props.StringProperty(name="",description="", default="")
     BASE_HEADLINE: bpy.props.StringProperty(name="BASE SETTINGS",description="BASE SETTINGS", default="BASE SETTINGS")
@@ -121,7 +120,6 @@ class BUILDINGGENERATOR(bpy.types.Operator):
         self.base = Basis.create_basis(self.BASE_WIDTH, self.BASE_FLOORS, self.BASE_LENGTH, Gen.cm_to_m(self.BASE_WALLTHICKNESS-2), Gen.getMaterialFromEnm(self.BASE_MATERIAL))
         
         if self.ROOF_TYPE == "Mushroom":
-            print("Mushroom")
             self.ROOF_OVERHANG = True
         roof = Roof.generateRoof(self.ROOF_TYPE, self.BASE_LENGTH, self.BASE_WIDTH,Gen.cm_to_m(self.ROOF_HEIGHT), "Roof", "RoofMesh", self.ROOF_OVERHANG,Gen.cm_to_m(self.ROOF_OVERHANG_SIZE), Gen.getMaterialFromEnm(self.ROOF_MATERIAL), self.BASE_FLOORS, Gen.cm_to_m(self.BASE_WALLTHICKNESS))
         
